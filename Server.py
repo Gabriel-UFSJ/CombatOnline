@@ -3,7 +3,7 @@ import threading
 import sys
 from tkinter import E
 
-SERVER = ""
+SERVER = "192.168.5.110"
 PORT = 5555
 
 SERVER_SOCKET = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -15,10 +15,27 @@ except socket.error as E:
 
 SERVER_SOCKET.listen(4)
 print("Server ready")
-print("waiting for a connection")
+print("Waiting for a connection")
 
 def threaded_client(CONNECTION):
-    pass
+    CONNECTION.send(str.encode("Connected"))
+    REPLY = ""
+    while (True):
+        try:
+            DATA = CONNECTION.recv(2048)
+            REPLY = DATA.decode("utf-8")
+            if not DATA:
+                print("Disconnected")
+                break
+            else:
+                print("Recieved: ", REPLY)
+                print("Sending : ", REPLY)
+
+            CONNECTION.sendall(str.encode(REPLY))
+        except:
+            break
+    print("Connection lost")
+    CONNECTION.close()
 
 
 while(True):

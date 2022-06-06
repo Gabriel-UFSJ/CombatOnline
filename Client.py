@@ -30,7 +30,7 @@ DARKRED = (139,0,0)
 ###########Assets###########
 
 ##hulls##
-HULLS_1_IMAGE = pygame.image.load(os.path.join('JogoOnline','Assets','PNG', 'Hulls_Color_A','Hull_02.png'))
+HULLS_1_IMAGE = pygame.image.load(os.path.join('CombatOnline','Assets','PNG', 'Hulls_Color_A','Hull_02.png'))
 HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE,(TANK_WIDTH, TANK_HEIGHT)),270)
 
 ##hulls##
