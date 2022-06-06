@@ -2,9 +2,8 @@ from operator import truediv
 from tkinter import Widget
 import pygame
 import os
-import threading
-import socket
-import select
+from Network import Network
+
 
 WIDTH, HEIGHT = 1600,900
 
@@ -58,31 +57,50 @@ class Player():
             self.y -= self.VEL
         if keys_pressed[pygame.K_s]: # DOWN
             self.y += self.VEL
+        self.update()
 
-        self.rect = (self.x,self.y, self.WIDTH, self.HEIGHT)
+    def update(self):
+        self.rect = (self.x, self.y, self.WIDTH, self.HEIGHT)
 
-def draw_window(WIN, PLAYER):
+def read_pos(str):
+    str = str.split(",")
+    return int(str[0]), int(str[1])
+
+def make_pos(tup):
+    return str(tup[0]) + "," + str(tup[1])
+
+def draw_window(WIN, PLAYER1,PLAYER2):
     WIN.fill(DARKRED)
-    PLAYER.draw(WIN)
+    PLAYER1.draw(WIN)
+    PLAYER2.draw(WIN)
     pygame.display.update()
 
 def main():
+    NETWORK = Network()
+    STARTPOS = read_pos(NETWORK.getPos())
 
-    PLAYER = Player(100,430,TANK_WIDTH,TANK_HEIGHT,(0,255,0))
+    PLAYER1 = Player(STARTPOS[0],STARTPOS[1],TANK_WIDTH,TANK_HEIGHT,(0,255,0))
+    PLAYER2 = Player(0,0,TANK_WIDTH,TANK_HEIGHT,(0,255,0))
 
-    clock = pygame.time.Clock()
-    run = True
+    CLOCK = pygame.time.Clock()
+    RUN = True
 
-    while (run):
-        clock.tick(FPS)
+    while (RUN):
+        CLOCK.tick(FPS)
+
+        PLAYER2_POS = read_pos(NETWORK.send(make_pos((PLAYER1.x,PLAYER1.y))))
+        PLAYER2.X = PLAYER2_POS[0]
+        PLAYER2.Y = PLAYER2_POS[1]
+        PLAYER2.update()
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run=False
+                RUN = False
+                pygame.quit()
         
-        PLAYER.move()
-        draw_window(WIN, PLAYER)
-        
-    pygame.quit()
+        PLAYER1.move()
+        draw_window(WIN, PLAYER1,PLAYER2)    
+
 
 if __name__ == "__main__":
     main()
