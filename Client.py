@@ -1,5 +1,3 @@
-from operator import truediv
-from tkinter import Widget
 import pygame
 import os
 from Network import Network
@@ -29,23 +27,23 @@ DARKRED = (139,0,0)
 ###########Assets###########
 
 ##hulls##
-HULLS_1_IMAGE = pygame.image.load(os.path.join('CombatOnline','Assets','PNG', 'Hulls_Color_A','Hull_02.png'))
+HULLS_1_IMAGE = pygame.image.load(os.path.join('Assets','PNG', 'Hulls_Color_A','Hull_02.png'))
 HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE,(TANK_WIDTH, TANK_HEIGHT)),270)
 
 ##hulls##
 
 class Player():
-    def __init__(self,X,Y,WIDTH,HEIGHT,COLOR):
+    def __init__(self,X,Y,WIDTH,HEIGHT,OBJECT):
         self.x = X
         self.y = Y
         self.WIDTH = WIDTH
         self.HEIGHT = HEIGHT
-        self.COLOR = COLOR
+        self.OBJECT = OBJECT
         self.rect = (X,Y,WIDTH,HEIGHT)
         self.VEL = 3
 
     def draw(self, WIN):
-        pygame.draw.rect(WIN, self.COLOR, self.rect)
+        pygame.draw.rect(WIN, self.OBJECT, self.rect)
 
     def move(self):
         keys_pressed = pygame.key.get_pressed()

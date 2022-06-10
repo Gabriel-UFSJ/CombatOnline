@@ -3,7 +3,9 @@ import threading
 import sys
 from tkinter import E
 
-SERVER = "192.168.5.110"
+from pkg_resources import compatible_platforms
+
+SERVER = "26.202.88.100"
 PORT = 5555
 
 SERVER_SOCKET = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -13,7 +15,7 @@ try:
 except socket.error as E:
     str(E)
 
-SERVER_SOCKET.listen(4)
+SERVER_SOCKET.listen(2)
 print("Server ready")
 print("Waiting for a connection")
 
@@ -24,7 +26,7 @@ def read_pos(str):
 def make_pos(tup):
     return str(tup[0]) + "," + str(tup[1])
 
-POS = [(0,0),(100,100),(200,200),(400,400)]
+POS = [(0,0),(100,100)]
 
 def threaded_client(CONNECTION,PLAYER):
     CONNECTION.send(str.encode(make_pos(POS[PLAYER])))
