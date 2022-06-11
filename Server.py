@@ -1,9 +1,7 @@
+import pickle
 import socket
 import threading
-import sys
-from tkinter import E
-
-from pkg_resources import compatible_platforms
+from Player import Player
 
 SERVER = "26.202.88.100"
 PORT = 5555
@@ -19,35 +17,28 @@ SERVER_SOCKET.listen(2)
 print("Server ready")
 print("Waiting for a connection")
 
-def read_pos(str):
-    str = str.split(",")
-    return int(str[0]), int(str[1])
-
-def make_pos(tup):
-    return str(tup[0]) + "," + str(tup[1])
-
-POS = [(0,0),(100,100)]
+players = [Player(0,0,50,50(255,0,0)),Player(100,100,50,50,(0,0,255))]
 
 def threaded_client(CONNECTION,PLAYER):
-    CONNECTION.send(str.encode(make_pos(POS[PLAYER])))
+    CONNECTION.send(pickle.dumps(players[PLAYER]))
     REPLY = ""
     while (True):
         try:
-            DATA = read_pos(CONNECTION.recv(2048).decode())
-            POS[PLAYER] = DATA
+            DATA = pickle.loads(CONNECTION.recv(2048))
+            players[PLAYER] = DATA
 
             if not DATA:
                 print("Disconnected")
                 break
             else:
                 if PLAYER == 1:
-                    REPLY = POS[0]
+                    REPLY = players[0]
                 else:
-                    REPLY = POS[1]     
+                    REPLY = players[1]     
                 print("Recieved: ", DATA)
                 print("Sending : ", REPLY)
 
-            CONNECTION.sendall(str.encode(make_pos(REPLY)))
+            CONNECTION.sendall(pickle.dumps(REPLY))
         except:
             break
     print("Connection lost")
