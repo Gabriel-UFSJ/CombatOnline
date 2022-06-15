@@ -3,6 +3,8 @@ import socket
 import threading
 from Player import Player
 
+WIDTH, HEIGHT = 1400,920
+
 SERVER = "26.202.88.100"
 PORT = 5555
 
@@ -13,11 +15,12 @@ try:
 except socket.error as E:
     str(E)
 
+CURRENT_PLAYER = 0
 SERVER_SOCKET.listen(2)
 print("Server ready")
 print("Waiting for a connection")
 
-players = [Player(0,0,50,50(255,0,0)),Player(100,100,50,50,(0,0,255))]
+players = [Player(60,460,50,50,(255,0,0),CURRENT_PLAYER),Player(1290,460,50,50,(0,0,255),CURRENT_PLAYER)]
 
 def threaded_client(CONNECTION,PLAYER):
     CONNECTION.send(pickle.dumps(players[PLAYER]))
@@ -35,20 +38,20 @@ def threaded_client(CONNECTION,PLAYER):
                     REPLY = players[0]
                 else:
                     REPLY = players[1]     
-                print("Recieved: ", DATA)
-                print("Sending : ", REPLY)
-
+                #print("Recieved: ", DATA)
+                #print("Sending : ", REPLY)
+                print(players)
             CONNECTION.sendall(pickle.dumps(REPLY))
         except:
             break
     print("Connection lost")
     CONNECTION.close()
 
-CURRENT_PLAYER = 0
 
-while(True):
+while True:
     CONNECTION, ADDR = SERVER_SOCKET.accept()
     print("Connected to: ", ADDR)
-
+    print(CURRENT_PLAYER)
     threading.Thread(target=threaded_client, args = (CONNECTION,CURRENT_PLAYER)).start()
     CURRENT_PLAYER += 1
+    
