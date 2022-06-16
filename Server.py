@@ -38,9 +38,6 @@ def threaded_client(CONNECTION,PLAYER):
                     REPLY = players[0]
                 else:
                     REPLY = players[1]     
-                #print("Recieved: ", DATA)
-                #print("Sending : ", REPLY)
-                print(players)
             CONNECTION.sendall(pickle.dumps(REPLY))
         except:
             break

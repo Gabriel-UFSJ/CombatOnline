@@ -1,9 +1,6 @@
-from sys import displayhook
-from turtle import width
 import pygame
 import os
 from Network import Network
-from Player import Player
 
 WIDTH, HEIGHT = 1400,900
 
@@ -49,12 +46,21 @@ TILE_4 = pygame.transform.rotate(pygame.transform.scale(TILE_4_IMAGE,(TILE_SIZE,
 
 def draw_window(WIN, DISPLAY, PLAYER1, PLAYER2):
     DISPLAY.fill(DARKRED)
+
     draw_map(DISPLAY)  
     SURF = pygame.transform.scale(DISPLAY, (WIDTH,HEIGHT))
     WIN.blit(SURF,(0,0))
-    PLAYER1.draw(WIN,PLAYER1.ID)
-    PLAYER2.draw(WIN,PLAYER2.ID)
+
+    for bullet in PLAYER1.bullets:
+        bullet.draw_bullet(WIN)
+    for bullet in PLAYER2.bullets:
+        bullet.draw_bullet(WIN)
+
+    PLAYER1.draw_player(WIN)
+    PLAYER2.draw_player(WIN)
+
     pygame.display.update()
+
 
 game_map = [['1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1'],
             ['1','0','0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],

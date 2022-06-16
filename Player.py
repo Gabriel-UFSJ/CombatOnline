@@ -1,5 +1,6 @@
-from operator import truediv
-from re import purge
+from asyncio.windows_events import NULL
+import pickle
+import traceback
 import pygame
 import os
 
@@ -16,18 +17,22 @@ HULLS_2 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE,(TANK_WID
 
 WIDTH, HEIGHT = 1400,920
 
-bullet_group = pygame.sprite.Group()
 
-class bullet(pygame.sprite.Sprite):
+class Bullet(pygame.sprite.Sprite):
     def __init__(self,pos_x,pos_y):
-        super().__init__()
-        self.image = pygame.Surface((50,10))
-        self.image.fill((255,0,0))
-        self.rect = self.image.get_rect(center = (pos_x,pos_y))
+        self.x = pos_x
+        self.y = pos_y
 
+        self.rect = pygame.Rect(self.x, self.y, 50, 10)
+        self.color = (255,0,0)
+
+    def draw_bullet(self, WIN):
+        pygame.draw.rect(WIN, self.color, self.rect)
+    
     def update(self):
         self.rect.x += 5
-        
+
+
 
 class Player():
     def __init__(self,X,Y,WIDTH,HEIGHT,COLOR,ID):
@@ -39,15 +44,16 @@ class Player():
         self.ID = ID
         self.rect = pygame.Rect(self.x, self.y, self.WIDTH, self.HEIGHT)
         self.VEL = 3
+        self.bullets = []
 
-    def draw(self, WIN,ID):
-        print(ID)
+    def draw_player(self, WIN):
         if self.ID == 0:
             WIN.blit(HULLS_1,(self.x,self.y))
         elif self.ID == 1:
             WIN.blit(HULLS_2,(self.x,self.y))
-        bullet_group.draw(WIN)
-        #pygame.draw.rect(WIN, self.COLOR, self.rect)
+
+        pygame.draw.rect(WIN, self.COLOR, self.rect)
+
 
     def move(self):
         keys_pressed = pygame.key.get_pressed()
@@ -60,13 +66,13 @@ class Player():
         if keys_pressed[pygame.K_s] and self.y + self.VEL + 50 < HEIGHT: # DOWN
             self.y += self.VEL
         if keys_pressed[pygame.K_SPACE]: #FIRE
-            bullet_group.add(self.create_bullet())
-        
-        bullet_group.update()
+            bullet = Bullet(self.x,self.y)
+            self.bullets.append(bullet)  
+
+        for bullet in self.bullets:
+            Bullet.update(bullet)
+
         self.update()
 
     def update(self):
         self.rect = pygame.Rect(self.x, self.y, self.WIDTH, self.HEIGHT)
-
-    def create_bullet(self):
-        return bullet(self.x,self.y)
