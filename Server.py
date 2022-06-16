@@ -1,3 +1,4 @@
+from operator import truediv
 import pickle
 import socket
 import threading
@@ -20,7 +21,7 @@ SERVER_SOCKET.listen(2)
 print("Server ready")
 print("Waiting for a connection")
 
-players = [Player(60,460,50,50,(255,0,0),CURRENT_PLAYER),Player(1290,460,50,50,(0,0,255),CURRENT_PLAYER)]
+players = [Player(60,460,50,50,(255,0,0),CURRENT_PLAYER, right = True, left= False),Player(1290,460,50,50,(0,0,255),CURRENT_PLAYER,right = False, left = True)]
 
 def threaded_client(CONNECTION,PLAYER):
     CONNECTION.send(pickle.dumps(players[PLAYER]))

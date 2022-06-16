@@ -19,9 +19,11 @@ WIDTH, HEIGHT = 1400,920
 
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self,pos_x,pos_y):
+    def __init__(self,pos_x,pos_y,pos_right, pos_left):
         self.x = pos_x
         self.y = pos_y
+        self.right = pos_right
+        self.left = pos_left
 
         self.rect = pygame.Rect(self.x, self.y, 50, 10)
         self.color = (255,0,0)
@@ -30,18 +32,22 @@ class Bullet(pygame.sprite.Sprite):
         pygame.draw.rect(WIN, self.color, self.rect)
     
     def update(self):
-        self.rect.x += 5
-
+        if self.right == True:
+            self.rect.x += 5
+        elif self.left == True:
+            self.rect.x -= 5
 
 
 class Player():
-    def __init__(self,X,Y,WIDTH,HEIGHT,COLOR,ID):
+    def __init__(self,X,Y,WIDTH,HEIGHT,COLOR,ID,right,left):
         self.x = X
         self.y = Y
         self.WIDTH = WIDTH
         self.HEIGHT = HEIGHT
         self.COLOR = COLOR
         self.ID = ID
+        self.right = right
+        self.left = left
         self.rect = pygame.Rect(self.x, self.y, self.WIDTH, self.HEIGHT)
         self.VEL = 3
         self.bullets = []

@@ -49,7 +49,7 @@ def draw_window(WIN, DISPLAY, PLAYER1, PLAYER2):
 
     draw_map(DISPLAY)  
     SURF = pygame.transform.scale(DISPLAY, (WIDTH,HEIGHT))
-    WIN.blit(SURF,(0,0))
+    WIN.blit(SURF,(0,0))    
 
     for bullet in PLAYER1.bullets:
         bullet.draw_bullet(WIN)
