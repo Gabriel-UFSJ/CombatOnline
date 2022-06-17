@@ -36,16 +36,17 @@ class Bullet(pygame.sprite.Sprite):
 
     def draw_bullet(self, WIN):
         if self.right == True:
-            WIN.blit(BULLET_RIGHT,(self.x,self.y + 30))
+            WIN.blit(BULLET_RIGHT,(self.x,self.y))
         elif self.left == True:
-            WIN.blit(BULLET_LEFT,(self.x,self.y + 30))
-        pygame.draw.rect(WIN, self.color, self.rect)
+            WIN.blit(BULLET_LEFT,(self.x,self.y))
+
+
     
     def update(self):
         if self.right == True:
-            self.rect.x += 5
+            self.x += 5
         elif self.left == True:
-            self.rect.x -= 5
+            self.x -= 5
 
 
 class Player():
@@ -63,23 +64,29 @@ class Player():
         self.bullets = []
 
     def draw_player(self, WIN):
-        if self.ID == 0:
+        if self.right == True:
             WIN.blit(HULLS_1,(self.x,self.y))
-        elif self.ID == 1:
+        else:
             WIN.blit(HULLS_2,(self.x,self.y))
 
         #pygame.draw.rect(WIN, self.COLOR, self.rect)
 
 
     def move(self):
+        global HULLS_1
+        
         keys_pressed = pygame.key.get_pressed()
         if keys_pressed[pygame.K_a] and self.x - self.VEL > 0:  # LEFT
+            HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE,(TANK_WIDTH, TANK_HEIGHT)),90)
             self.x -= self.VEL
         if keys_pressed[pygame.K_d] and self.x + self.VEL + 50 < WIDTH: # RIGHT
+            HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE,(TANK_WIDTH, TANK_HEIGHT)),270)
             self.x += self.VEL
         if keys_pressed[pygame.K_w] and self.y - self.VEL > 0: # UP
+            HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE,(TANK_WIDTH, TANK_HEIGHT)),0)
             self.y -= self.VEL
         if keys_pressed[pygame.K_s] and self.y + self.VEL + 50 < HEIGHT: # DOWN
+            HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE,(TANK_WIDTH, TANK_HEIGHT)),180)
             self.y += self.VEL
         if keys_pressed[pygame.K_SPACE]: #FIRE
             bullet = Bullet(self.x, self.y, self.right, self.left)

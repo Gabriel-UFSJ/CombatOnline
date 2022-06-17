@@ -49,12 +49,11 @@ def draw_window(WIN, DISPLAY, PLAYER1, PLAYER2):
 
     draw_map(DISPLAY)  
     SURF = pygame.transform.scale(DISPLAY, (WIDTH,HEIGHT))
-    WIN.blit(SURF,(0,0))    
+    WIN.blit(SURF,(0,0))   
 
     for bullet in PLAYER1.bullets:
         bullet.draw_bullet(WIN)
-    for bullet in PLAYER2.bullets:
-        bullet.draw_bullet(WIN)
+    
 
     PLAYER1.draw_player(WIN)
     PLAYER2.draw_player(WIN)
@@ -103,9 +102,9 @@ def draw_map(DISPLAY):
 def main():
     RUN = True
     
-    NETWORK = Network()
+    NETWORK = Network() ## cria conexão
     
-    PLAYER1 = NETWORK.getPlayer()
+    PLAYER1 = NETWORK.getPlayer() # coloca a conexão no player1
 
 
     CLOCK = pygame.time.Clock()
@@ -121,7 +120,6 @@ def main():
 
         #collisions = PLAYER1.collision(tile_rects)
         PLAYER1.move()
-
 
         draw_window(WIN, DISPLAY, PLAYER1, PLAYER2)  
 
