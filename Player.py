@@ -1,4 +1,3 @@
-from asyncio.windows_events import NULL
 import pickle
 import traceback
 import pygame
@@ -13,6 +12,13 @@ HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE,(TANK_WID
 HULLS_2_IMAGE = pygame.image.load(os.path.join('Assets','PNG', 'Hulls_Color_B','Hull_02.png'))
 HULLS_2 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE,(TANK_WIDTH, TANK_HEIGHT)),90)
 ##hulls##
+
+##effects##
+BULLET_IMAGE = pygame.image.load(os.path.join('Assets','PNG','Effects','Light_Shell.png'))
+BULLET_LEFT = pygame.transform.rotate(pygame.transform.scale(BULLET_IMAGE,(100,100)),90)
+BULLET_RIGHT  = pygame.transform.rotate(pygame.transform.scale(BULLET_IMAGE,(100,100)),270)
+
+##effects##
 
 
 WIDTH, HEIGHT = 1400,920
@@ -29,6 +35,10 @@ class Bullet(pygame.sprite.Sprite):
         self.color = (255,0,0)
 
     def draw_bullet(self, WIN):
+        if self.right == True:
+            WIN.blit(BULLET_RIGHT,(self.x,self.y + 30))
+        elif self.left == True:
+            WIN.blit(BULLET_LEFT,(self.x,self.y + 30))
         pygame.draw.rect(WIN, self.color, self.rect)
     
     def update(self):
@@ -58,7 +68,7 @@ class Player():
         elif self.ID == 1:
             WIN.blit(HULLS_2,(self.x,self.y))
 
-        pygame.draw.rect(WIN, self.COLOR, self.rect)
+        #pygame.draw.rect(WIN, self.COLOR, self.rect)
 
 
     def move(self):
@@ -72,7 +82,7 @@ class Player():
         if keys_pressed[pygame.K_s] and self.y + self.VEL + 50 < HEIGHT: # DOWN
             self.y += self.VEL
         if keys_pressed[pygame.K_SPACE]: #FIRE
-            bullet = Bullet(self.x,self.y)
+            bullet = Bullet(self.x, self.y, self.right, self.left)
             self.bullets.append(bullet)  
 
         for bullet in self.bullets:

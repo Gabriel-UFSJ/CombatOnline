@@ -98,6 +98,8 @@ def draw_map(DISPLAY):
             x += 1
         y += 1
 
+
+
 def main():
     RUN = True
     

@@ -1,4 +1,3 @@
-from operator import truediv
 import pickle
 import socket
 import threading
