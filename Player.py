@@ -59,6 +59,8 @@ class Player():
         self.ID = ID
         self.right = right
         self.left = left
+        self.up = False
+        self.down = False
         self.rect = pygame.Rect(self.x, self.y, self.WIDTH, self.HEIGHT)
         self.VEL = 3
         self.bullets = []
@@ -69,32 +71,28 @@ class Player():
         else:
             WIN.blit(HULLS_2,(self.x,self.y))
 
-        #pygame.draw.rect(WIN, self.COLOR, self.rect)
-
-
-    def move(self):
+    def animation(self):
         global HULLS_1
         
+
+    def move(self):
         keys_pressed = pygame.key.get_pressed()
+
         if keys_pressed[pygame.K_a] and self.x - self.VEL > 0:  # LEFT
-            HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE,(TANK_WIDTH, TANK_HEIGHT)),90)
             self.x -= self.VEL
         if keys_pressed[pygame.K_d] and self.x + self.VEL + 50 < WIDTH: # RIGHT
-            HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE,(TANK_WIDTH, TANK_HEIGHT)),270)
             self.x += self.VEL
         if keys_pressed[pygame.K_w] and self.y - self.VEL > 0: # UP
-            HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE,(TANK_WIDTH, TANK_HEIGHT)),0)
             self.y -= self.VEL
         if keys_pressed[pygame.K_s] and self.y + self.VEL + 50 < HEIGHT: # DOWN
-            HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE,(TANK_WIDTH, TANK_HEIGHT)),180)
             self.y += self.VEL
         if keys_pressed[pygame.K_SPACE]: #FIRE
             bullet = Bullet(self.x, self.y, self.right, self.left)
             self.bullets.append(bullet)  
-
         for bullet in self.bullets:
             Bullet.update(bullet)
 
+        self.animation()
         self.update()
 
     def update(self):

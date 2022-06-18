@@ -8,7 +8,6 @@ WIN = pygame.display.set_mode((WIDTH,HEIGHT))
 DISPLAY = pygame.Surface((348,228))
 pygame.display.set_caption("Combat Client")
 
-CLIENTS = {}
 FPS = 60
 
 ###########Colors###########
@@ -18,30 +17,18 @@ CRIMSON = (220,20,60)
 DARKRED = (139,0,0)
 ###########Assets###########
 
-##hulls##
-TANK_WIDTH, TANK_HEIGHT = 55,55
-
-HULLS_1_IMAGE = pygame.image.load(os.path.join('Assets','PNG', 'Hulls_Color_A','Hull_02.png'))
-HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE,(100, 100)),270)
-##hulls##
-
 ##tiles##
-
 TILE_1_IMAGE = pygame.image.load(os.path.join('Assets','TILES', 'iron.png'))
 TILE_2_IMAGE = pygame.image.load(os.path.join('Assets','TILES', 'iron_vent.png'))
 TILE_3_IMAGE = pygame.image.load(os.path.join('Assets','TILES', 'cooper.png'))
 TILE_4_IMAGE = pygame.image.load(os.path.join('Assets','TILES', 'night.png'))
 
-#TILE_SIZE = TILE_1_IMAGE.get_width()
 TILE_SIZE = 12
 
 TILE_1 = pygame.transform.rotate(pygame.transform.scale(TILE_1_IMAGE,(TILE_SIZE, TILE_SIZE)),0)
 TILE_2 = pygame.transform.rotate(pygame.transform.scale(TILE_2_IMAGE,(TILE_SIZE, TILE_SIZE)),0)
 TILE_3 = pygame.transform.rotate(pygame.transform.scale(TILE_3_IMAGE,(TILE_SIZE, TILE_SIZE)),0)
 TILE_4 = pygame.transform.rotate(pygame.transform.scale(TILE_4_IMAGE,(TILE_SIZE, TILE_SIZE)),0)
-
-
-
 ##tiles##
 
 def draw_window(WIN, DISPLAY, PLAYER1, PLAYER2):
@@ -51,12 +38,13 @@ def draw_window(WIN, DISPLAY, PLAYER1, PLAYER2):
     SURF = pygame.transform.scale(DISPLAY, (WIDTH,HEIGHT))
     WIN.blit(SURF,(0,0))   
 
-    for bullet in PLAYER1.bullets:
+    for bullet in PLAYER1.bullets: #print bullets for player1
         bullet.draw_bullet(WIN)
-    
+    for bullet in PLAYER2.bullets: #print bullets for player2
+        bullet.draw_bullet(WIN)
 
-    PLAYER1.draw_player(WIN)
-    PLAYER2.draw_player(WIN)
+    PLAYER1.draw_player(WIN) #drawing player1
+    PLAYER2.draw_player(WIN) #drawing player2
 
     pygame.display.update()
 
@@ -102,23 +90,22 @@ def draw_map(DISPLAY):
 def main():
     RUN = True
     
-    NETWORK = Network() ## cria conexão
+    NETWORK = Network() #create connection
     
-    PLAYER1 = NETWORK.getPlayer() # coloca a conexão no player1
+    PLAYER1 = NETWORK.getPlayer() #get connection for player1
 
 
     CLOCK = pygame.time.Clock()
 
     while (RUN):
         CLOCK.tick(FPS)
-        PLAYER2 = NETWORK.send(PLAYER1)
+        PLAYER2 = NETWORK.send(PLAYER1) #send to server player1 and receive player2
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 RUN = False
                 pygame.quit()
 
-        #collisions = PLAYER1.collision(tile_rects)
         PLAYER1.move()
 
         draw_window(WIN, DISPLAY, PLAYER1, PLAYER2)  
