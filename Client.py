@@ -106,8 +106,7 @@ def main():
                 RUN = False
                 pygame.quit()
 
-        PLAYER1.move()
-
+        PLAYER1.move(PLAYER2)
         draw_window(WIN, DISPLAY, PLAYER1, PLAYER2)  
 
 
