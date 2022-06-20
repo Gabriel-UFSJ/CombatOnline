@@ -3,7 +3,7 @@ import socket
 import threading
 from Player import Player
 
-WIDTH, HEIGHT = 1400,920
+WIDTH, HEIGHT = 1400,900
 
 SERVER = "26.202.88.100"
 PORT = 5555
@@ -20,7 +20,7 @@ SERVER_SOCKET.listen(2)
 print("Server ready")
 print("Waiting for a connection")
 
-players = [Player(60,460,CURRENT_PLAYER, right = True, left= False),Player(1290,460,CURRENT_PLAYER,right = False, left = True)]
+players = [Player(60,480,CURRENT_PLAYER, right = True, left= False),Player(1290,480,CURRENT_PLAYER,right = False, left = True)]
 
 def threaded_client(CONNECTION,PLAYER):
     CONNECTION.send(pickle.dumps(players[PLAYER]))

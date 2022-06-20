@@ -20,7 +20,6 @@ BULLET_RIGHT  = pygame.transform.rotate(pygame.transform.scale(BULLET_IMAGE,(100
 
 ##effects##
 
-
 WIDTH, HEIGHT = 1400,920
 
 
@@ -79,11 +78,13 @@ class Player():
         self.cool_down_count = 0 #cool down for shooting
         #Health
         self.hitbox = (self.x + 5 ,self.y,TANK_WIDTH - 10,TANK_HEIGHT)
+        self.health = 3
+        print(self.health)
 
     def draw_player(self, WIN):
         self.hitbox = (self.x + 5 ,self.y,TANK_WIDTH - 10,TANK_HEIGHT)
         pygame.draw.rect(WIN,(0,0,0),self.hitbox, 1)
-
+        
         if self.right == True:
             WIN.blit(HULLS_1,(self.x,self.y))
         else:
@@ -138,7 +139,8 @@ class Player():
     def hit(self, player):
         for bullet in self.bullets:
             if player.hitbox[0] < bullet.x < player.hitbox[0] + player.hitbox[2] and player.hitbox[1] < bullet.y + 1 < player.hitbox[1] + player.hitbox[3]:
-                print("hit")
+                if (player.health > 0):
+                    player.health -= 1
             
     def update(self):
         self.rect = pygame.Rect(self.x, self.y, self.WIDTH, self.HEIGHT)
