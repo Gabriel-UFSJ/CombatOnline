@@ -3,7 +3,7 @@ import os
 from random import randint
 from Network import Network
 
-WIDTH, HEIGHT = 1400,900
+WIDTH, HEIGHT = 1200,700
 
 WIN = pygame.display.set_mode((WIDTH,HEIGHT))
 DISPLAY = pygame.Surface((348,228))
@@ -13,7 +13,6 @@ FPS = 60
 
 MYFONT = pygame.font.init()
 MYFONT = pygame.font.Font(None, 100) 
-
 
 ###########Colors###########
 WHITE = (255,255,255)
@@ -53,16 +52,15 @@ def draw_window(WIN, DISPLAY, PLAYER1, PLAYER2):
 
     PLAYER1_HEALTH = MYFONT.render(str(PLAYER1.health),1,(0,0,0))
     PLAYER2_HEALTH = MYFONT.render(str(PLAYER2.health),1,(0,0,0))
-    print(PLAYER1_HEALTH,PLAYER2_HEALTH,PLAYER1.health,PLAYER2.health)
-    WIN.blit(PLAYER1_HEALTH,(350,20))
-    WIN.blit(PLAYER2_HEALTH,(1050,20))
+    WIN.blit(PLAYER1_HEALTH,(PLAYER1.p_posx,PLAYER1.p_posy))
+    WIN.blit(PLAYER2_HEALTH,(PLAYER2.p_posx,PLAYER2.p_posy))
 
     pygame.display.update()
 
 
-x = randint(0, 1)
-y = randint(0, 1)
-z = randint(0, 1)
+x = randint(0, 4)
+y = randint(0, 4)
+z = randint(0, 4)
 
 game_map =  [['0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'],
             ['0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'],
@@ -95,12 +93,21 @@ def draw_map(DISPLAY):
                 DISPLAY.blit(TILE_1 , (x * TILE_SIZE, y * TILE_SIZE))
             if title == '2':
                 DISPLAY.blit(TILE_2 , (x * TILE_SIZE, y * TILE_SIZE))
+            if title == '3':
+                DISPLAY.blit(TILE_3 , (x * TILE_SIZE, y * TILE_SIZE))
+            if title == '4':
+                DISPLAY.blit(TILE_4 , (x * TILE_SIZE, y * TILE_SIZE))
             if title != '0':
                 tile_rects.append(pygame.Rect(x * TILE_SIZE, y * TILE_SIZE,TILE_SIZE,TILE_SIZE))
             x += 1
         y += 1
 
-
+def hit(PLAYER1,PLAYER2):
+    for bullet in PLAYER2.bullets:
+        if PLAYER1.hitbox[0] < bullet.x < PLAYER1.hitbox[0] + PLAYER1.hitbox[2] and PLAYER1.hitbox[1] < bullet.y + 1 < PLAYER1.hitbox[1] + PLAYER1.hitbox[3]:
+            if (PLAYER1.health > 0):
+                print("player1 lost health")
+                PLAYER1.health -= 1
 
 def main():
     RUN = True
@@ -108,7 +115,6 @@ def main():
     NETWORK = Network() #create connection
     
     PLAYER1 = NETWORK.getPlayer() #get connection for player1
-
 
     CLOCK = pygame.time.Clock()
 
@@ -121,7 +127,8 @@ def main():
                 RUN = False
                 pygame.quit()
 
-        PLAYER1.move(PLAYER2)
+        PLAYER1.move()
+        hit(PLAYER1,PLAYER2)
         draw_window(WIN, DISPLAY, PLAYER1, PLAYER2)  
 
 

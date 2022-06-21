@@ -66,6 +66,9 @@ class Player():
         self.WIDTH = TANK_WIDTH
         self.HEIGHT = TANK_HEIGHT
         self.ID = ID
+        #placar
+        self.p_posx = X
+        self.p_posy = Y - 460
         #look
         self.right = right
         self.left = left
@@ -79,8 +82,7 @@ class Player():
         #Health
         self.hitbox = (self.x + 5 ,self.y,TANK_WIDTH - 10,TANK_HEIGHT)
         self.health = 3
-        print(self.health)
-
+        
     def draw_player(self, WIN):
         self.hitbox = (self.x + 5 ,self.y,TANK_WIDTH - 10,TANK_HEIGHT)
         pygame.draw.rect(WIN,(0,0,0),self.hitbox, 1)
@@ -90,7 +92,7 @@ class Player():
         else:
             WIN.blit(HULLS_2,(self.x,self.y))
 
-    def move(self, player):
+    def move(self):
         global HULLS_1
         keys_pressed = pygame.key.get_pressed()
         if keys_pressed[pygame.K_a] and self.x - self.VEL > 0:  # LEFT
@@ -113,7 +115,7 @@ class Player():
             self.up = False
             self.down = True
             #HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE,(TANK_WIDTH, TANK_HEIGHT)),180)
-        self.shooting(player)
+        self.shooting()
         self.update()
 
     def cooldown(self):
@@ -122,8 +124,7 @@ class Player():
         elif self.cool_down_count > 0:
             self.cool_down_count += 1
 
-    def shooting(self,player):
-        self.hit(player)
+    def shooting(self):
         self.cooldown()
         keys_pressed = pygame.key.get_pressed()
 
@@ -135,12 +136,6 @@ class Player():
             Bullet.update(bullet)
             if(bullet.off_screen()):
                 self.bullets.remove(bullet)
-
-    def hit(self, player):
-        for bullet in self.bullets:
-            if player.hitbox[0] < bullet.x < player.hitbox[0] + player.hitbox[2] and player.hitbox[1] < bullet.y + 1 < player.hitbox[1] + player.hitbox[3]:
-                if (player.health > 0):
-                    player.health -= 1
             
     def update(self):
         self.rect = pygame.Rect(self.x, self.y, self.WIDTH, self.HEIGHT)
