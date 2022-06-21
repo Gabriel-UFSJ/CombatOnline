@@ -52,8 +52,8 @@ def draw_window(WIN, DISPLAY, PLAYER1, PLAYER2):
 
     PLAYER1_HEALTH = MYFONT.render(str(PLAYER1.health),1,(0,0,0))
     PLAYER2_HEALTH = MYFONT.render(str(PLAYER2.health),1,(0,0,0))
-    WIN.blit(PLAYER1_HEALTH,(PLAYER1.p_posx,PLAYER1.p_posy))
-    WIN.blit(PLAYER2_HEALTH,(PLAYER2.p_posx,PLAYER2.p_posy))
+    WIN.blit(PLAYER1_HEALTH,(PLAYER1.p_posx,PLAYER1.p_posy - 470))
+    WIN.blit(PLAYER2_HEALTH,(PLAYER2.p_posx,PLAYER2.p_posy - 470))
 
     pygame.display.update()
 
@@ -102,12 +102,15 @@ def draw_map(DISPLAY):
             x += 1
         y += 1
 
-def hit(PLAYER1,PLAYER2):
+def hit(PLAYER1,PLAYER2,WIN):
     for bullet in PLAYER2.bullets:
         if PLAYER1.hitbox[0] < bullet.x < PLAYER1.hitbox[0] + PLAYER1.hitbox[2] and PLAYER1.hitbox[1] < bullet.y + 1 < PLAYER1.hitbox[1] + PLAYER1.hitbox[3]:
             if (PLAYER1.health > 0):
                 print("player1 lost health")
                 PLAYER1.health -= 1
+                PLAYER1.x = PLAYER1.p_posx
+                PLAYER1.y = PLAYER1.p_posy
+
 
 def main():
     RUN = True
@@ -118,6 +121,8 @@ def main():
 
     CLOCK = pygame.time.Clock()
 
+    Start = [ '3', '2', '1', 'READY']
+
     while (RUN):
         CLOCK.tick(FPS)
         PLAYER2 = NETWORK.send(PLAYER1) #send to server player1 and receive player2
@@ -126,9 +131,11 @@ def main():
             if event.type == pygame.QUIT:
                 RUN = False
                 pygame.quit()
+        
+        
 
         PLAYER1.move()
-        hit(PLAYER1,PLAYER2)
+        hit(PLAYER1,PLAYER2,WIN)
         draw_window(WIN, DISPLAY, PLAYER1, PLAYER2)  
 
 

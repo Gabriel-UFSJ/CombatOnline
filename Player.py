@@ -68,7 +68,7 @@ class Player():
         self.ID = ID
         #placar
         self.p_posx = X
-        self.p_posy = Y - 460
+        self.p_posy = Y
         #look
         self.right = right
         self.left = left
