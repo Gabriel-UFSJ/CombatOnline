@@ -111,7 +111,10 @@ def hit(PLAYER1,PLAYER2,WIN):
                 PLAYER2.bullets.remove(bullet)
                 PLAYER1.x = PLAYER1.p_posx
                 PLAYER1.y = PLAYER1.p_posy
-                
+    for bullet in PLAYER1.bullets:
+        if PLAYER2.hitbox[0] < bullet.x < PLAYER2.hitbox[0] + PLAYER2.hitbox[2] and PLAYER2.hitbox[1] < bullet.y + 1 < PLAYER2.hitbox[1] + PLAYER2.hitbox[3]:
+            PLAYER1.bullets.remove(bullet)
+
 
 
 def main():
