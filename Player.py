@@ -25,24 +25,24 @@ WIDTH, HEIGHT = 1400,920
 
 class Bullet(pygame.sprite.Sprite):
     def __init__(self,pos_x,pos_y,look_right, look_left,look_up,look_down):
-        self.x = pos_x
-        self.y = pos_y
+        self.x = pos_x + 20
+        self.y = pos_y + 17
         self.right = look_right
         self.left = look_left
         self.up = look_up
         self.down = look_down
 
-        self.rect = pygame.Rect(self.x, self.y, 50, 10)
+        self.rect = pygame.Rect(self.x, self.y, 15, 10)
         self.color = (255,0,0)
 
     def draw_bullet(self, WIN):
-        self.rect = pygame.Rect(self.x, self.y + 20, 50, 10)
-        pygame.draw.rect(WIN,(0,0,0),self.rect, 1)
+        self.rect = pygame.Rect(self.x, self.y, 15, 10)
+        #pygame.draw.rect(WIN,(0,0,0),self.rect, 1)
         
         if self.right == True:
-            WIN.blit(BULLET_RIGHT,(self.x,self.y - 25))
+            WIN.blit(BULLET_RIGHT,(self.x - 55,self.y - 45))
         elif self.left == True:
-            WIN.blit(BULLET_LEFT,(self.x,self.y - 25))
+            WIN.blit(BULLET_LEFT, (self.x - 55,self.y - 45))
     
     def update(self): #update de position of the bullet
         if self.right == True:
@@ -85,7 +85,7 @@ class Player():
         
     def draw_player(self, WIN):
         self.hitbox = (self.x + 5 ,self.y,TANK_WIDTH - 10,TANK_HEIGHT)
-        pygame.draw.rect(WIN,(0,0,0),self.hitbox, 1)
+        #pygame.draw.rect(WIN,(0,0,0),self.hitbox, 1)
         
         if self.right == True:
             WIN.blit(HULLS_1,(self.x,self.y))

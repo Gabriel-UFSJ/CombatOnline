@@ -108,8 +108,10 @@ def hit(PLAYER1,PLAYER2,WIN):
             if (PLAYER1.health > 0):
                 print("player1 lost health")
                 PLAYER1.health -= 1
+                PLAYER2.bullets.remove(bullet)
                 PLAYER1.x = PLAYER1.p_posx
                 PLAYER1.y = PLAYER1.p_posy
+                
 
 
 def main():
