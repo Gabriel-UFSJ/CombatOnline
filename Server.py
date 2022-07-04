@@ -1,6 +1,7 @@
 import pickle
 import socket
 import threading
+import pygame
 from Player import Player
 
 WIDTH, HEIGHT = 1400,900
@@ -23,6 +24,7 @@ print("Waiting for a connection")
 players = [Player(60,480,CURRENT_PLAYER, right = True, left= False),Player(900,480,CURRENT_PLAYER,right = False, left = True)]
 
 def hit(PLAYER1,PLAYER2):
+    #print("testing")
     for bullet in PLAYER2.bullets:
         if PLAYER1.hitbox[0] < bullet.x < PLAYER1.hitbox[0] + PLAYER1.hitbox[2] and PLAYER1.hitbox[1] < bullet.y + 1 < PLAYER1.hitbox[1] + PLAYER1.hitbox[3]:
             if (PLAYER1.health > 0):
@@ -53,7 +55,7 @@ def threaded_client(CONNECTION,PLAYER):
         try:
             DATA = pickle.loads(CONNECTION.recv(2048))
             players[PLAYER] = DATA
-
+            hit(players[0],players[1])
             if not DATA:
                 print("Disconnected")
                 break
@@ -70,9 +72,11 @@ def threaded_client(CONNECTION,PLAYER):
 
 
 while True:
+    #hit(players[0],players[1])
     CONNECTION, ADDR = SERVER_SOCKET.accept()
     print("Connected to: ", ADDR)
     print(CURRENT_PLAYER)
     threading.Thread(target=threaded_client, args = (CONNECTION,CURRENT_PLAYER)).start()
     CURRENT_PLAYER += 1
+    
     

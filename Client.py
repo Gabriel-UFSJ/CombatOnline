@@ -102,15 +102,7 @@ def draw_map(DISPLAY):
             x += 1
         y += 1
 
-def hit(PLAYER1,PLAYER2,WIN):
-    for bullet in PLAYER2.bullets:
-        if PLAYER1.hitbox[0] < bullet.x < PLAYER1.hitbox[0] + PLAYER1.hitbox[2] and PLAYER1.hitbox[1] < bullet.y + 1 < PLAYER1.hitbox[1] + PLAYER1.hitbox[3]:
-            if (PLAYER1.health > 0):
-                print("player1 lost health")
-                PLAYER1.health -= 1 
-                PLAYER1.x = PLAYER1.p_posx
-                PLAYER1.y = PLAYER1.p_posy
-    
+def hit(PLAYER1,PLAYER2):
     for bullet in PLAYER1.bullets:
         if PLAYER2.hitbox[0] + 10 < bullet.x < PLAYER2.hitbox[0] + PLAYER2.hitbox[2] and PLAYER2.hitbox[1] < bullet.y + 1 < PLAYER2.hitbox[1] + PLAYER2.hitbox[3]:
             PLAYER1.bullets.remove(bullet)
