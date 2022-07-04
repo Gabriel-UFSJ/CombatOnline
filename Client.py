@@ -107,12 +107,12 @@ def hit(PLAYER1,PLAYER2,WIN):
         if PLAYER1.hitbox[0] < bullet.x < PLAYER1.hitbox[0] + PLAYER1.hitbox[2] and PLAYER1.hitbox[1] < bullet.y + 1 < PLAYER1.hitbox[1] + PLAYER1.hitbox[3]:
             if (PLAYER1.health > 0):
                 print("player1 lost health")
-                PLAYER1.health -= 1
-                PLAYER2.bullets.remove(bullet)
+                PLAYER1.health -= 1 
                 PLAYER1.x = PLAYER1.p_posx
                 PLAYER1.y = PLAYER1.p_posy
+    
     for bullet in PLAYER1.bullets:
-        if PLAYER2.hitbox[0] < bullet.x < PLAYER2.hitbox[0] + PLAYER2.hitbox[2] and PLAYER2.hitbox[1] < bullet.y + 1 < PLAYER2.hitbox[1] + PLAYER2.hitbox[3]:
+        if PLAYER2.hitbox[0] + 10 < bullet.x < PLAYER2.hitbox[0] + PLAYER2.hitbox[2] and PLAYER2.hitbox[1] < bullet.y + 1 < PLAYER2.hitbox[1] + PLAYER2.hitbox[3]:
             PLAYER1.bullets.remove(bullet)
 
 
@@ -140,7 +140,7 @@ def main():
         
 
         PLAYER1.move()
-        hit(PLAYER1,PLAYER2,WIN)
+        #hit(PLAYER1,PLAYER2,WIN)
         draw_window(WIN, DISPLAY, PLAYER1, PLAYER2)  
 
 
