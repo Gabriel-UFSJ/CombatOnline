@@ -6,7 +6,7 @@ from Player import Player
 
 WIDTH, HEIGHT = 1400,900
 
-SERVER = "26.202.88.100"
+SERVER = "localhost"
 PORT = 5555
 
 SERVER_SOCKET = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -32,7 +32,6 @@ def hit(PLAYER1,PLAYER2):
                 PLAYER1.health -= 1 
                 PLAYER1.x = PLAYER1.p_posx
                 PLAYER1.y = PLAYER1.p_posy
-                
                 PLAYER2.bullets.remove(bullet)
     
     for bullet in PLAYER1.bullets:
@@ -42,7 +41,6 @@ def hit(PLAYER1,PLAYER2):
                 PLAYER2.health -= 1 
                 PLAYER2.x = PLAYER2.p_posx
                 PLAYER2.y = PLAYER2.p_posy
-                
                 PLAYER1.bullets.remove(bullet)
 
 
@@ -60,11 +58,9 @@ def threaded_client(CONNECTION,PLAYER):
                 print("Disconnected")
                 break
             else:
-                if PLAYER == 1:
-                    REPLY = players[0]
-                else:
-                    REPLY = players[1]     
+                REPLY = players
             CONNECTION.sendall(pickle.dumps(REPLY))
+            #print(players)
         except:
             break
     print("Connection lost")

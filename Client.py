@@ -115,15 +115,18 @@ def main():
     NETWORK = Network() #create connection
     
     PLAYER1 = NETWORK.getPlayer() #get connection for player1
-
+    print(PLAYER1.ID)
     CLOCK = pygame.time.Clock()
 
     Start = [ '3', '2', '1', 'READY']
 
     while (RUN):
         CLOCK.tick(FPS)
-        PLAYER2 = NETWORK.send(PLAYER1) #send to server player1 and receive player2
+        PLAYER2 = NETWORK.send(PLAYER1)[1] #send to server player1 and receive player2
+        PLAYER1 = NETWORK.send(PLAYER1)[0]
+        players = NETWORK.send(PLAYER1)
 
+        #print(players)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 RUN = False
