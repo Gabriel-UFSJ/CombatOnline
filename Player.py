@@ -60,12 +60,12 @@ class Bullet(pygame.sprite.Sprite):
 
 
 class Player():
-    def __init__(self,X,Y,ID,right,left):
+    def __init__(self,X,Y,right,left):
         self.x = X
         self.y = Y
         self.WIDTH = TANK_WIDTH
         self.HEIGHT = TANK_HEIGHT
-        self.ID = ID
+        self.ID = 0
         #placar
         self.p_posx = X
         self.p_posy = Y

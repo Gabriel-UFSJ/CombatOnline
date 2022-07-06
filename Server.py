@@ -6,7 +6,7 @@ from Player import Player
 
 WIDTH, HEIGHT = 1400,900
 
-SERVER = "localhost"
+SERVER = "26.202.88.100"
 PORT = 5555
 
 SERVER_SOCKET = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -21,7 +21,7 @@ SERVER_SOCKET.listen(2)
 print("Server ready")
 print("Waiting for a connection")
 
-players = [Player(60,480,CURRENT_PLAYER, right = True, left= False),Player(900,480,CURRENT_PLAYER,right = False, left = True)]
+players = [Player(60,480, right = True, left= False),Player(900,480,right = False, left = True)]
 
 def hit(PLAYER1,PLAYER2):
     #print("testing")
@@ -47,6 +47,7 @@ def hit(PLAYER1,PLAYER2):
 
 
 def threaded_client(CONNECTION,PLAYER):
+    players[0].ID = CURRENT_PLAYER
     CONNECTION.send(pickle.dumps(players[PLAYER]))
     REPLY = ""
     while (True):

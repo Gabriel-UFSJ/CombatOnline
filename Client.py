@@ -116,6 +116,8 @@ def main():
     
     PLAYER1 = NETWORK.getPlayer() #get connection for player1
     print(PLAYER1.ID)
+
+    
     CLOCK = pygame.time.Clock()
 
     Start = [ '3', '2', '1', 'READY']
