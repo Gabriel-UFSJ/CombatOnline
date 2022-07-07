@@ -6,10 +6,7 @@ from Player import Player
 
 WIDTH, HEIGHT = 1400,900
 
-health1 = 3
-health2 = 3
-
-
+health = [3,3]
 
 x = randint(0, 4)
 y = randint(0, 4)
@@ -36,7 +33,7 @@ game_map =  [['0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0
             ['1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1']]
 
 
-players = [Player(60,480,0,health1, game_map, right = True, left= False),Player(900,480,1,health2,game_map, right = False, left = True)]
+players = [Player(60,480,0,health[0], game_map, right = True, left= False),Player(900,480,1,health[1],game_map, right = False, left = True)]
 
 def hit(PLAYER1,PLAYER2):
     #print("testing")
@@ -44,7 +41,7 @@ def hit(PLAYER1,PLAYER2):
         if PLAYER1.hitbox[0] < bullet.x < PLAYER1.hitbox[0] + PLAYER1.hitbox[2] and PLAYER1.hitbox[1] < bullet.y + 1 < PLAYER1.hitbox[1] + PLAYER1.hitbox[3]:
             if (PLAYER1.health > 0):
                 print("player1 lost health")
-                PLAYER1.health -= 1 
+                health1 -= 1 
                 PLAYER1.x = PLAYER1.p_posx
                 PLAYER1.y = PLAYER1.p_posy
                 PLAYER2.bullets.remove(bullet)
@@ -65,6 +62,7 @@ def threaded_client(CONNECTION,PLAYER):
         try:
             DATA = pickle.loads(CONNECTION.recv(2048))
             players[PLAYER] = DATA
+            players[PLAYER].health = health[PLAYER]
             hit(players[0],players[1])
             if not DATA:
                 print("Disconnected")
