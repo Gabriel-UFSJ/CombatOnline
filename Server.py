@@ -22,19 +22,18 @@ def hit(PLAYER1,PLAYER2):
         if PLAYER1.hitbox[0] < bullet.x < PLAYER1.hitbox[0] + PLAYER1.hitbox[2] and PLAYER1.hitbox[1] < bullet.y + 1 < PLAYER1.hitbox[1] + PLAYER1.hitbox[3]:
             if (PLAYER1.health > 0):
                 print("player1 lost health")
-                health1 -= 1 
-                PLAYER1.x = PLAYER1.p_posx
-                PLAYER1.y = PLAYER1.p_posy
+                health[0] -= 1
                 PLAYER2.bullets.remove(bullet)
-    
+                return True
+
     for bullet in PLAYER1.bullets:
         if PLAYER2.hitbox[0] < bullet.x < PLAYER2.hitbox[0] + PLAYER2.hitbox[2] and PLAYER2.hitbox[1] < bullet.y + 1 < PLAYER2.hitbox[1] + PLAYER2.hitbox[3]:
             if (PLAYER1.health > 0):
                 print("player2 lost health")
-                PLAYER2.health -= 1 
-                PLAYER2.x = PLAYER2.p_posx
-                PLAYER2.y = PLAYER2.p_posy
+                health[1] -= 1 
                 PLAYER1.bullets.remove(bullet)
+                return True
+    return False
 
 def threaded_client(CONNECTION,PLAYER):
     CONNECTION.send(pickle.dumps(players[PLAYER]))
@@ -44,7 +43,13 @@ def threaded_client(CONNECTION,PLAYER):
             DATA = pickle.loads(CONNECTION.recv(2048))
             players[PLAYER] = DATA
             players[PLAYER].health = health[PLAYER]
-            hit(players[0],players[1])
+            
+            if hit(players[0],players[1]):
+                print("true")
+            else:
+                print("false")
+
+
             if not DATA:
                 print("Disconnected")
                 break
