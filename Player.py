@@ -1,5 +1,3 @@
-import pickle
-import traceback
 import pygame
 import os
 
@@ -60,7 +58,7 @@ class Bullet(pygame.sprite.Sprite):
 
 
 class Player():
-    def __init__(self,X,Y,ID,right,left):
+    def __init__(self,X,Y,ID,health,map,right,left):
         self.x = X
         self.y = Y
         self.WIDTH = TANK_WIDTH
@@ -81,7 +79,9 @@ class Player():
         self.cool_down_count = 0 #cool down for shooting
         #Health
         self.hitbox = (self.x + 5 ,self.y,TANK_WIDTH - 10,TANK_HEIGHT)
-        self.health = 3
+        self.health = health
+        #map
+        self.map = map
         
     def draw_player(self, WIN):
         self.hitbox = (self.x + 5 ,self.y,TANK_WIDTH - 10,TANK_HEIGHT)

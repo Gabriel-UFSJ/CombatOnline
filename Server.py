@@ -1,27 +1,42 @@
 import pickle
 import socket
 import threading
-import pygame
+from random import randint
 from Player import Player
 
 WIDTH, HEIGHT = 1400,900
 
-SERVER = "26.202.88.100"
-PORT = 5555
+health1 = 3
+health2 = 3
 
-SERVER_SOCKET = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-try:
-    SERVER_SOCKET.bind((SERVER,PORT))
-except socket.error as E:
-    str(E)
 
-CURRENT_PLAYER = 0
-SERVER_SOCKET.listen(2)
-print("Server ready")
-print("Waiting for a connection")
+x = randint(0, 4)
+y = randint(0, 4)
+z = randint(0, 4)
 
-players = [Player(60,480,0, right = True, left= False),Player(900,480,1,right = False, left = True)]
+game_map =  [['0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'],
+            ['0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'],
+            ['1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1'],
+            ['1','0','0','0','0','0','0','0','0','0','0','0','0','0',f'{z}','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+            ['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+            ['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+            ['1','0','0','0','0','0','0','0','0',f'{y}',f'{y}',f'{y}','0','0','0','0','0',f'{y}',f'{y}',f'{y}','0','0','0','0','0','0','0','0','1'],
+            ['1','0','0','0','0','0','0','0','0',f'{y}','0','0','0','0','0','0','0','0','0',f'{y}','0','0','0','0','0','0','0','0','1'],
+            ['1','0','0',f'{x}',f'{x}','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0',f'{x}',f'{x}','0','0','1'],
+            ['1','0','0','0',f'{x}','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0',f'{x}','0','0','0','1'],
+            ['1','0','0','0',f'{x}','0','0',f'{z}','0','0','0','0','0','0','0','0','0','0','0','0','0',f'{z}','0','0',f'{x}','0','0','0','1'],
+            ['1','0','0','0',f'{x}','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0',f'{x}','0','0','0','1'],
+            ['1','0','0',f'{x}',f'{x}','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0',f'{x}',f'{x}','0','0','1'],
+            ['1','0','0','0','0','0','0','0','0',f'{y}','0','0','0','0','0','0','0','0','0',f'{y}','0','0','0','0','0','0','0','0','1'],
+            ['1','0','0','0','0','0','0','0','0',f'{y}',f'{y}',f'{y}','0','0','0','0','0',f'{y}',f'{y}',f'{y}','0','0','0','0','0','0','0','0','1'],
+            ['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+            ['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+            ['1','0','0','0','0','0','0','0','0','0','0','0','0','0',f'{z}','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+            ['1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1']]
+
+
+players = [Player(60,480,0,health1, game_map, right = True, left= False),Player(900,480,1,health2,game_map, right = False, left = True)]
 
 def hit(PLAYER1,PLAYER2):
     #print("testing")
@@ -43,9 +58,6 @@ def hit(PLAYER1,PLAYER2):
                 PLAYER2.y = PLAYER2.p_posy
                 PLAYER1.bullets.remove(bullet)
 
-
-
-
 def threaded_client(CONNECTION,PLAYER):
     CONNECTION.send(pickle.dumps(players[PLAYER]))
     REPLY = ""
@@ -66,13 +78,31 @@ def threaded_client(CONNECTION,PLAYER):
     print("Connection lost")
     CONNECTION.close()
 
+def main():
+    SERVER = "26.202.88.100"
+    PORT = 5555
 
-while True:
-    #hit(players[0],players[1])
-    CONNECTION, ADDR = SERVER_SOCKET.accept()
-    print("Connected to: ", ADDR)
-    print(CURRENT_PLAYER)
-    threading.Thread(target=threaded_client, args = (CONNECTION,CURRENT_PLAYER)).start()
-    CURRENT_PLAYER += 1
+    SERVER_SOCKET = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    try:
+        SERVER_SOCKET.bind((SERVER,PORT))
+    except socket.error as E:
+        str(E)
+
+    CURRENT_PLAYER = 0
+    SERVER_SOCKET.listen(2)
+    print("Server ready")
+    print("Waiting for a connection")
+
+    while True:
+        #hit(players[0],players[1])
+        CONNECTION, ADDR = SERVER_SOCKET.accept()
+        print("Connected to: ", ADDR)
+        print(CURRENT_PLAYER)
+        threading.Thread(target=threaded_client, args = (CONNECTION,CURRENT_PLAYER)).start()
+        CURRENT_PLAYER += 1
+        
+if __name__ == "__main__":
+    main()
     
     
