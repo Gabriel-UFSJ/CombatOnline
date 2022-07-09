@@ -56,6 +56,12 @@ def draw_window(WIN, DISPLAY, PLAYER1, PLAYER2):
 
     pygame.display.update()
 
+def start_round(WIN,PLAYER1):
+    Start = [ '3', '2', '1', 'READY']
+    for index in Start:
+        WIN.blit(Start[index],(600,350))
+    PLAYER1.start = False
+
 
 tile_rects = []
 
@@ -119,8 +125,6 @@ def main():
 
     CLOCK = pygame.time.Clock()
 
-    Start = [ '3', '2', '1', 'READY']
-
     while (RUN):
         CLOCK.tick(FPS)
 
@@ -128,20 +132,17 @@ def main():
         if ID == 0:
             PLAYER2 = NETWORK.send(PLAYER1)[1] #send to server player1 and receive player2
         else:
-            PLAYER2 = NETWORK.send(PLAYER1)[0] #send to server player1 and receive player2
-        
-
+            PLAYER2 = NETWORK.send(PLAYER1)[0] #send to server player1 and receive player2       
         #print(players)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 RUN = False
                 pygame.quit()
-        
-        
-
-        PLAYER1.move()
-        #hit(PLAYER1,PLAYER2,WIN)
-        draw_window(WIN, DISPLAY, PLAYER1, PLAYER2)  
+            PLAYER1.move()
+            #hit(PLAYER1,PLAYER2,WIN)
+            draw_window(WIN, DISPLAY, PLAYER1, PLAYER2)
+            if PLAYER1.start == True:
+                start_round(WIN) 
 
 
 if __name__ == "__main__":
