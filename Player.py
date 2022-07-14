@@ -58,7 +58,7 @@ class Bullet(pygame.sprite.Sprite):
 
 
 class Player():
-    def __init__(self,X,Y,ID,health,map,right,left,start):
+    def __init__(self,X,Y,ID,health,map,right,left):
         self.x = X
         self.y = Y
         self.WIDTH = TANK_WIDTH
@@ -83,7 +83,7 @@ class Player():
         #map
         self.map = map
         #server fill
-        self.start = start
+        self.start = False
         
     def draw_player(self, WIN):
         self.hitbox = (self.x + 5 ,self.y,TANK_WIDTH - 10,TANK_HEIGHT)

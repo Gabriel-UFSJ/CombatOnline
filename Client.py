@@ -1,3 +1,4 @@
+import re
 import pygame
 import os
 from Network import Network
@@ -56,11 +57,22 @@ def draw_window(WIN, DISPLAY, PLAYER1, PLAYER2):
 
     pygame.display.update()
 
-def start_round(WIN,PLAYER1):
+def start_round(WIN,PLAYER1,index):
     Start = [ '3', '2', '1', 'READY']
-    for index in Start:
-        WIN.blit(Start[index],(600,350))
-    PLAYER1.start = False
+    #print(index)
+    if PLAYER1.start == True: 
+        ready = MYFONT.render(str(Start[index]),1,(0,0,0))
+        WIN.blit(ready,(600,350))
+        pygame.display.update()
+        pygame.time.delay(500)
+        index += 1
+        if index >= 4:
+            PLAYER1.start = False
+            return 0
+        else:
+            return index
+    else:
+        return 0
 
 
 tile_rects = []
@@ -107,13 +119,6 @@ def draw_map(DISPLAY,game_map):
             x += 1
         y += 1
 
-def hit(PLAYER1,PLAYER2):
-    for bullet in PLAYER1.bullets:
-        if PLAYER2.hitbox[0] + 10 < bullet.x < PLAYER2.hitbox[0] + PLAYER2.hitbox[2] and PLAYER2.hitbox[1] < bullet.y + 1 < PLAYER2.hitbox[1] + PLAYER2.hitbox[3]:
-            PLAYER1.bullets.remove(bullet)
-
-
-
 def main():
     RUN = True
     
@@ -121,14 +126,15 @@ def main():
     
     PLAYER1 = NETWORK.getServerPackage() #get connection for player1
     ID = PLAYER1.ID
-
-
+    print(ID)
+    i = 0
     CLOCK = pygame.time.Clock()
 
     while (RUN):
         CLOCK.tick(FPS)
 
         PLAYER1 = NETWORK.send(PLAYER1)[ID]
+
         if ID == 0:
             PLAYER2 = NETWORK.send(PLAYER1)[1] #send to server player1 and receive player2
         else:
@@ -138,11 +144,12 @@ def main():
             if event.type == pygame.QUIT:
                 RUN = False
                 pygame.quit()
-            PLAYER1.move()
-            #hit(PLAYER1,PLAYER2,WIN)
-            draw_window(WIN, DISPLAY, PLAYER1, PLAYER2)
-            if PLAYER1.start == True:
-                start_round(WIN) 
+
+        i = start_round(WIN,PLAYER1,i)
+        PLAYER1.move()
+        
+        draw_window(WIN, DISPLAY, PLAYER1, PLAYER2)
+            
 
 
 if __name__ == "__main__":

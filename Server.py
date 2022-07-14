@@ -14,7 +14,7 @@ z = randint(0, 4)
 
 game_map = [x,y,z]
 
-players = [Player(60,480,0,health[0], game_map, right = True, left= False, start = False),Player(900,480,1,health[1],game_map, right = False, left = True, start = False)]
+players = [Player(60,480,0,health[0], game_map, right = True, left= False),Player(900,480,1,health[1],game_map, right = False, left = True)]
 
 def hit(PLAYER1,PLAYER2):
     #print("testing")
@@ -50,7 +50,7 @@ def threaded_client(CONNECTION,PLAYER):
 
                 players[1].x = players[1].p_posx
                 players[1].y = players[1].p_posy
-                players.start = True
+                players[PLAYER].start = True
 
             if not DATA:
                 print("Disconnected")
@@ -65,7 +65,7 @@ def threaded_client(CONNECTION,PLAYER):
     CONNECTION.close()
 
 def main():
-    SERVER = "26.202.88.100"
+    SERVER = "localhost"
     PORT = 5555
 
     SERVER_SOCKET = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
