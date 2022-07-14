@@ -13,7 +13,7 @@ y = randint(0, 4)
 z = randint(0, 4)
 
 game_map = [x,y,z]
-
+CURRENT_PLAYER = 0
 players = [Player(60,480,0,health[0], game_map, right = True, left= False),Player(900,480,1,health[1],game_map, right = False, left = True)]
 
 def hit(PLAYER1,PLAYER2):
@@ -36,6 +36,7 @@ def hit(PLAYER1,PLAYER2):
     return False
 
 def threaded_client(CONNECTION,PLAYER):
+    global CURRENT_PLAYER
     CONNECTION.send(pickle.dumps(players[PLAYER]))
     REPLY = ""
     while (True):
@@ -62,9 +63,11 @@ def threaded_client(CONNECTION,PLAYER):
         except:
             break
     print("Connection lost")
+    CURRENT_PLAYER -= 1
     CONNECTION.close()
 
 def main():
+    global CURRENT_PLAYER
     SERVER = "localhost"
     PORT = 5555
 
@@ -75,7 +78,6 @@ def main():
     except socket.error as E:
         str(E)
 
-    CURRENT_PLAYER = 0
     SERVER_SOCKET.listen(2)
     print("Server ready")
     print("Waiting for a connection")
