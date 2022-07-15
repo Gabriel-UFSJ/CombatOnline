@@ -26,7 +26,7 @@ players = [Player(60,480,0,health[0], game_map, right = True, left= False), Play
 
 def hit(PLAYER1,PLAYER2):
     for bullet in PLAYER2.bullets:
-        if PLAYER1.hitbox[0] < bullet.x < PLAYER1.hitbox[0] + PLAYER1.hitbox[2] and PLAYER1.hitbox[1] < bullet.y + 1 < PLAYER1.hitbox[1] + PLAYER1.hitbox[3]:
+        if PLAYER1.rect[0] < bullet.x < PLAYER1.rect[0] + PLAYER1.rect[2] and PLAYER1.rect[1] < bullet.y + 1 < PLAYER1.rect[1] + PLAYER1.rect[3]:
             if (PLAYER1.health > 0):
                 HIT_SOUND.play()
                 print("player1 lost health")
@@ -35,7 +35,7 @@ def hit(PLAYER1,PLAYER2):
                 return True
 
     for bullet in PLAYER1.bullets:
-        if PLAYER2.hitbox[0] < bullet.x < PLAYER2.hitbox[0] + PLAYER2.hitbox[2] and PLAYER2.hitbox[1] < bullet.y + 1 < PLAYER2.hitbox[1] + PLAYER2.hitbox[3]:
+        if PLAYER2.rect[0] < bullet.x < PLAYER2.rect[0] + PLAYER2.rect[2] and PLAYER2.rect[1] < bullet.y + 1 < PLAYER2.rect[1] + PLAYER2.rect[3]:
             if (PLAYER1.health > 0):
                 HIT_SOUND.play()
                 print("player2 lost health")
@@ -56,11 +56,9 @@ def threaded_client(CONNECTION,PLAYER):
             players[PLAYER].health = health[PLAYER]
             
             if hit(players[0], players[1]):
-                players[0].x = players[0].p_posx
-                players[0].y = players[0].p_posy
+                players[0].rect.move(players[0].p_posx,players[0].p_posy)
 
-                players[1].x = players[1].p_posx
-                players[1].y = players[1].p_posy
+                players[1].rect.move(players[1].p_posx,players[1].p_posy)
                 players[PLAYER].start = True
 
             if not DATA:

@@ -64,26 +64,22 @@ class Bullet(pygame.sprite.Sprite):
 
 class Player():
     def __init__(self,X,Y,ID,health,map,right,left):
-        self.x = X
-        self.y = Y
-        self.WIDTH = TANK_WIDTH
-        self.HEIGHT = TANK_HEIGHT
         self.ID = ID
         #placar
         self.p_posx = X
         self.p_posy = Y
-        #look
+        #mov
+        self.movement = [0, 0]
+        self.VEL = 1.5 #velocity of player
         self.right = right
         self.left = left
         self.up = False
         self.down = False
-
-        self.VEL = 1.5 #velocity of player
         #bullets
         self.bullets = [] #list of bullets
         self.cool_down_count = 0 #cool down for shooting
         #Health
-        self.hitbox = (self.x + 5 ,self.y,TANK_WIDTH - 10,TANK_HEIGHT)
+        self.rect = pygame.Rect(X,Y,HULLS_1.get_width() ,HULLS_1.get_height())
         self.health = health
         #map
         self.map = map
@@ -91,39 +87,61 @@ class Player():
         self.start = False
         
     def draw_player(self, WIN):
-        self.hitbox = (self.x + 5 ,self.y,TANK_WIDTH - 10,TANK_HEIGHT)
-        #pygame.draw.rect(WIN,(0,0,0),self.hitbox, 1)
-        
-        if self.right == True:
-            WIN.blit(HULLS_1,(self.x,self.y))
-        else:
-            WIN.blit(HULLS_2,(self.x,self.y))
+        pygame.draw.rect(WIN,(0,0,0),self.rect,1)
 
-    def move(self):
+        if self.right == True:
+            WIN.blit(HULLS_1, (self.rect.x, self.rect.y))
+        else:
+            WIN.blit(HULLS_2, (self.rect.x, self.rect.y))
+
+    def collision_test(self, tiles):
+        hit_list = []
+        for tile in tiles:
+            if self.rect.colliderect(tile):
+                hit_list.append(tile)
+        return hit_list
+
+    def move(self,tiles):
+        collision_types = {'top': False, 'bottom': False, 'right': False, 'left': False}
+        self.rect.x += self.movement[0]
+        hit_list = self.collision_test(tiles)
+
+        for tile in hit_list:
+            if self.movement[0] > 0:
+                self.rect.right = tile.left
+                collision_types['right'] = True
+            elif self.movement[0] < 0:
+                self.rect.left = tile.right
+                collision_types['left'] = True
+
+        self.rect.y += self.movement[1]
+        hit_list = self.collision_test(tiles)
+
+        for tile in hit_list:
+            if self.movement[1] > 0:
+                self.rect.bottom = tile.top
+                collision_types['bottom'] = True
+            elif self.movement[1] < 0:
+                self.rect.top = tile.bottom
+                collision_types['top'] = True
+        return self.rect
+
+
+    def keys(self,tile_rects):
+        self.movement = [0, 0]
         global HULLS_1
         keys_pressed = pygame.key.get_pressed()
-        if keys_pressed[pygame.K_a] and self.x - self.VEL > 0:  # LEFT
-            self.x -= self.VEL
-            self.right = False
-            self.left = True
-            HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE,(TANK_WIDTH, TANK_HEIGHT)),90)
-        if keys_pressed[pygame.K_d] and self.x + self.VEL + 50 < WIDTH: # RIGHT
-            self.x += self.VEL
-            self.right = True
-            self.left = False
-            HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE,(TANK_WIDTH, TANK_HEIGHT)),270)
-        if keys_pressed[pygame.K_w] and self.y - self.VEL > 0: # UP
-            self.y -= self.VEL
-            self.up = True
-            self.down = False
-            HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE,(TANK_WIDTH, TANK_HEIGHT)),360)
-        if keys_pressed[pygame.K_s] and self.y + self.VEL + 50 < HEIGHT: # DOWN
-            self.y += self.VEL
-            self.up = False
-            self.down = True
-            HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE,(TANK_WIDTH, TANK_HEIGHT)),180)
+        if keys_pressed[pygame.K_a] and self.rect.x - self.VEL > 0 :  # LEFT
+            self.movement[0] -= self.VEL
+        if keys_pressed[pygame.K_d] and self.rect.x + self.VEL + 50 < WIDTH: # RIGHT
+            self.movement[0] += self.VEL
+        if keys_pressed[pygame.K_w] and self.rect.y - self.VEL > 0  : # UP
+            self.movement[1] -= self.VEL
+        if keys_pressed[pygame.K_s] and self.rect.y + self.VEL + 50 < HEIGHT : # DOWN
+            self.movement[1] += self.VEL
+        
+        self.rect = self.move(tile_rects)
         self.shooting()
-        self.update()
 
     def cooldown(self):
         if self.cool_down_count >= 60:
@@ -137,7 +155,7 @@ class Player():
 
         if keys_pressed[pygame.K_SPACE] and self.cool_down_count == 0: #FIRE
             SHOT_SOUND.play()
-            bullet = Bullet(self.x, self.y, self.right, self.left, self.up, self.down)
+            bullet = Bullet(self.rect.x, self.rect.y, self.right, self.left,self.up,self.down)
             self.bullets.append(bullet) 
             self.cool_down_count = 1
         for bullet in self.bullets:

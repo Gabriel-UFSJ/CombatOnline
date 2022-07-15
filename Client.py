@@ -35,6 +35,7 @@ TILE_2 = pygame.transform.rotate(pygame.transform.scale(TILE_2_IMAGE,(TILE_SIZE,
 TILE_3 = pygame.transform.rotate(pygame.transform.scale(TILE_3_IMAGE,(TILE_SIZE, TILE_SIZE)),0)
 TILE_4 = pygame.transform.rotate(pygame.transform.scale(TILE_4_IMAGE,(TILE_SIZE, TILE_SIZE)),0)
 ##tiles##
+
 #####POWERUPS#####
 POWERUP_1_IMAGE = pygame.image.load(os.path.join('Assets','POWERUPS', 'armor.png')) # Armadura extra
 POWERUP_2_IMAGE = pygame.image.load(os.path.join('Assets','POWERUPS', 'fastshot.png'))   # Tiro rápido
@@ -200,7 +201,8 @@ def main():
                 pygame.quit()
 
         i = start_round(WIN,PLAYER1,i)
-        PLAYER1.move()
+        
+        PLAYER1.keys(tile_rects)
         
         draw_window(WIN, DISPLAY, PLAYER1, PLAYER2)
             
