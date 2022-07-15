@@ -12,12 +12,12 @@ x = randint(0, 4)
 y = randint(0, 4)
 z = randint(0, 4)
 
-game_map = [x,y,z]
-CURRENT_PLAYER = 0
-players = [Player(60,480,0,health[0], game_map, right = True, left= False),Player(900,480,1,health[1],game_map, right = False, left = True)]
+game_map = [x, y, z]
+CURRENT_PLAYER = [0, 1, 2, 3]      # Retornar a posição do player
+
+players = [Player(60,480,0,health[0], game_map, right = True, left= False), Player(900,480,1,health[1],game_map, right = False, left = True)]
 
 def hit(PLAYER1,PLAYER2):
-    #print("testing")
     for bullet in PLAYER2.bullets:
         if PLAYER1.hitbox[0] < bullet.x < PLAYER1.hitbox[0] + PLAYER1.hitbox[2] and PLAYER1.hitbox[1] < bullet.y + 1 < PLAYER1.hitbox[1] + PLAYER1.hitbox[3]:
             if (PLAYER1.health > 0):
@@ -39,13 +39,13 @@ def threaded_client(CONNECTION,PLAYER):
     global CURRENT_PLAYER
     CONNECTION.send(pickle.dumps(players[PLAYER]))
     REPLY = ""
-    while (True):
+    while True:
         try:
             DATA = pickle.loads(CONNECTION.recv(2048))
             players[PLAYER] = DATA
             players[PLAYER].health = health[PLAYER]
             
-            if hit(players[0],players[1]):
+            if hit(players[0], players[1]):
                 players[0].x = players[0].p_posx
                 players[0].y = players[0].p_posy
 
@@ -59,11 +59,10 @@ def threaded_client(CONNECTION,PLAYER):
             else:
                 REPLY = players
             CONNECTION.sendall(pickle.dumps(REPLY))
-            #print(players)
         except:
             break
     print("Connection lost")
-    CURRENT_PLAYER -= 1
+    CURRENT_PLAYER.append(PLAYER)
     CONNECTION.close()
 
 def main():
@@ -74,7 +73,7 @@ def main():
     SERVER_SOCKET = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     try:
-        SERVER_SOCKET.bind((SERVER,PORT))
+        SERVER_SOCKET.bind((SERVER, PORT))
     except socket.error as E:
         str(E)
 
@@ -83,14 +82,30 @@ def main():
     print("Waiting for a connection")
 
     while True:
-        #hit(players[0],players[1])
         CONNECTION, ADDR = SERVER_SOCKET.accept()
         print("Connected to: ", ADDR)
+
+        if 0 in CURRENT_PLAYER:
+            CURRENT_PLAYER.remove(0)
+            threading.Thread(target=threaded_client, args=(CONNECTION, 0)).start()
+        elif 1 in CURRENT_PLAYER:
+            CURRENT_PLAYER.remove(1)
+            threading.Thread(target=threaded_client, args=(CONNECTION, 1)).start()
+        # elif 2 in CURRENT_PLAYER:                                                 # Adicionar quando aceitar 4 players
+        #     print("Posição 2 ocupada")
+        #     threading.Thread(target=threaded_client, args=(CONNECTION, 2)).start()
+        #     CURRENT_PLAYER.remove(2)
+        # elif 3 in CURRENT_PLAYER:
+        #     print("Posição 3 ocupada")
+        #     threading.Thread(target=threaded_client, args=(CONNECTION, 3)).start()
+        #     CURRENT_PLAYER.remove(3)
+        else:
+            CONNECTION.close()
+            print("Full session")
         print(CURRENT_PLAYER)
-        threading.Thread(target=threaded_client, args = (CONNECTION,CURRENT_PLAYER)).start()
-        CURRENT_PLAYER += 1
-        if CURRENT_PLAYER >= 2:
-            players.start = True
+
+        # if len(CURRENT_PLAYER) <= 2:
+        #     players.start = True
 
 if __name__ == "__main__":
     main()
