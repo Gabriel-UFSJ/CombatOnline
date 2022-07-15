@@ -1,5 +1,11 @@
 import pygame
 import os
+from pygame import mixer
+
+#####SOUNDS#####
+pygame.init()
+SHOT_SOUND = mixer.Sound('Sounds/shot.wav')
+################
 
 ##hulls##
 TANK_WIDTH, TANK_HEIGHT = 55,40
@@ -15,7 +21,6 @@ HULLS_2 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE,(TANK_WID
 BULLET_IMAGE = pygame.image.load(os.path.join('Assets','PNG','Effects','Light_Shell.png'))
 BULLET_LEFT = pygame.transform.rotate(pygame.transform.scale(BULLET_IMAGE,(100,100)),90)
 BULLET_RIGHT  = pygame.transform.rotate(pygame.transform.scale(BULLET_IMAGE,(100,100)),270)
-
 ##effects##
 
 WIDTH, HEIGHT = 1400,920
@@ -101,22 +106,22 @@ class Player():
             self.x -= self.VEL
             self.right = False
             self.left = True
-            #HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE,(TANK_WIDTH, TANK_HEIGHT)),90)
+            HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE,(TANK_WIDTH, TANK_HEIGHT)),90)
         if keys_pressed[pygame.K_d] and self.x + self.VEL + 50 < WIDTH: # RIGHT
             self.x += self.VEL
             self.right = True
             self.left = False
-            #HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE,(TANK_WIDTH, TANK_HEIGHT)),270)
+            HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE,(TANK_WIDTH, TANK_HEIGHT)),270)
         if keys_pressed[pygame.K_w] and self.y - self.VEL > 0: # UP
             self.y -= self.VEL
             self.up = True
             self.down = False
-            #HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE,(TANK_WIDTH, TANK_HEIGHT)),0)
+            HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE,(TANK_WIDTH, TANK_HEIGHT)),360)
         if keys_pressed[pygame.K_s] and self.y + self.VEL + 50 < HEIGHT: # DOWN
             self.y += self.VEL
             self.up = False
             self.down = True
-            #HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE,(TANK_WIDTH, TANK_HEIGHT)),180)
+            HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE,(TANK_WIDTH, TANK_HEIGHT)),180)
         self.shooting()
         self.update()
 
@@ -131,6 +136,7 @@ class Player():
         keys_pressed = pygame.key.get_pressed()
 
         if keys_pressed[pygame.K_SPACE] and self.cool_down_count == 0: #FIRE
+            SHOT_SOUND.play()
             bullet = Bullet(self.x, self.y, self.right, self.left, self.up, self.down)
             self.bullets.append(bullet) 
             self.cool_down_count = 1

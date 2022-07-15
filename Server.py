@@ -3,6 +3,13 @@ import socket
 import threading
 from random import randint
 from Player import Player
+from pygame import mixer
+
+#####SOUNDS#####
+HIT_SOUND = mixer.Sound('Sounds/hit.wav')
+# mixer.music.load('Sounds/backgroundMusic.wav')
+# mixer.music.play(-1)
+################
 
 WIDTH, HEIGHT = 1400,900
 
@@ -21,6 +28,7 @@ def hit(PLAYER1,PLAYER2):
     for bullet in PLAYER2.bullets:
         if PLAYER1.hitbox[0] < bullet.x < PLAYER1.hitbox[0] + PLAYER1.hitbox[2] and PLAYER1.hitbox[1] < bullet.y + 1 < PLAYER1.hitbox[1] + PLAYER1.hitbox[3]:
             if (PLAYER1.health > 0):
+                HIT_SOUND.play()
                 print("player1 lost health")
                 health[0] -= 1
                 PLAYER2.bullets.remove(bullet)
@@ -29,6 +37,7 @@ def hit(PLAYER1,PLAYER2):
     for bullet in PLAYER1.bullets:
         if PLAYER2.hitbox[0] < bullet.x < PLAYER2.hitbox[0] + PLAYER2.hitbox[2] and PLAYER2.hitbox[1] < bullet.y + 1 < PLAYER2.hitbox[1] + PLAYER2.hitbox[3]:
             if (PLAYER1.health > 0):
+                HIT_SOUND.play()
                 print("player2 lost health")
                 health[1] -= 1 
                 PLAYER1.bullets.remove(bullet)
@@ -37,6 +46,7 @@ def hit(PLAYER1,PLAYER2):
 
 def threaded_client(CONNECTION,PLAYER):
     global CURRENT_PLAYER
+
     CONNECTION.send(pickle.dumps(players[PLAYER]))
     REPLY = ""
     while True:

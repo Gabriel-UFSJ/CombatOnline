@@ -2,6 +2,7 @@ import re
 import pygame
 import os
 from Network import Network
+from pygame import mixer
 
 WIDTH, HEIGHT = 1260,720
 
@@ -34,6 +35,30 @@ TILE_2 = pygame.transform.rotate(pygame.transform.scale(TILE_2_IMAGE,(TILE_SIZE,
 TILE_3 = pygame.transform.rotate(pygame.transform.scale(TILE_3_IMAGE,(TILE_SIZE, TILE_SIZE)),0)
 TILE_4 = pygame.transform.rotate(pygame.transform.scale(TILE_4_IMAGE,(TILE_SIZE, TILE_SIZE)),0)
 ##tiles##
+#####POWERUPS#####
+POWERUP_1_IMAGE = pygame.image.load(os.path.join('Assets','POWERUPS', 'armor.png')) # Armadura extra
+POWERUP_2_IMAGE = pygame.image.load(os.path.join('Assets','POWERUPS', 'fastshot.png'))   # Tiro rápido
+POWERUP_3_IMAGE = pygame.image.load(os.path.join('Assets','POWERUPS', 'invincibility.png'))   # Invulnerabilidade
+POWERUP_4_IMAGE = pygame.image.load(os.path.join('Assets','POWERUPS', 'vel.png'))   # Movimento rápido
+POWERUP_5_IMAGE = pygame.image.load(os.path.join('Assets','POWERUPS', 'invisibility.png'))   # Invisibilidade
+POWERUP_6_IMAGE = pygame.image.load(os.path.join('Assets','POWERUPS', 'mult.png'))   # Tiro múltiplo
+POWERUP_7_IMAGE = pygame.image.load(os.path.join('Assets','POWERUPS', 'powerful.png'))   # Tiro poderoso
+POWERUP_8_IMAGE = pygame.image.load(os.path.join('Assets','POWERUPS', 'weakening.png'))   # Tiro enfraquecedor
+
+POWERUP_1 = pygame.transform.rotate(pygame.transform.scale(POWERUP_1_IMAGE,(TILE_SIZE, TILE_SIZE)),0)
+POWERUP_2 = pygame.transform.rotate(pygame.transform.scale(POWERUP_2_IMAGE,(TILE_SIZE, TILE_SIZE)),0)
+POWERUP_3 = pygame.transform.rotate(pygame.transform.scale(POWERUP_3_IMAGE,(TILE_SIZE, TILE_SIZE)),0)
+POWERUP_4 = pygame.transform.rotate(pygame.transform.scale(POWERUP_4_IMAGE,(TILE_SIZE, TILE_SIZE)),0)
+POWERUP_5 = pygame.transform.rotate(pygame.transform.scale(POWERUP_5_IMAGE,(TILE_SIZE, TILE_SIZE)),0)
+POWERUP_6 = pygame.transform.rotate(pygame.transform.scale(POWERUP_6_IMAGE,(TILE_SIZE, TILE_SIZE)),0)
+POWERUP_7 = pygame.transform.rotate(pygame.transform.scale(POWERUP_7_IMAGE,(TILE_SIZE, TILE_SIZE)),0)
+POWERUP_8 = pygame.transform.rotate(pygame.transform.scale(POWERUP_8_IMAGE,(TILE_SIZE, TILE_SIZE)),0)
+################
+#####SOUNDS#####
+pygame.init()
+POWERUP_SOUND = mixer.Sound('Sounds/powerup.wav')
+################
+
 
 def draw_window(WIN, DISPLAY, PLAYER1, PLAYER2):
     DISPLAY.fill(DARKRED)
@@ -90,7 +115,7 @@ def draw_map(DISPLAY,game_map):
                 ['0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'],
                 ['0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'],
                 ['1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1'],
-                ['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0',f'{z}','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+                ['1','0','0','5','6','7','8','9','10','11','12','0','0','0','0','0','0',f'{z}','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
                 ['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
                 ['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
                 ['1','0','0','0','0','0','0','0','0',f'{y}',f'{y}',f'{y}',f'{y}','0','0','0','0','0','0','0','0','0',f'{y}',f'{y}',f'{y}',f'{y}','0','0','0','0','0','0','0','0','1'],
@@ -121,6 +146,22 @@ def draw_map(DISPLAY,game_map):
                 DISPLAY.blit(TILE_3 , (x * TILE_SIZE, y * TILE_SIZE))
             if title == '4':
                 DISPLAY.blit(TILE_4 , (x * TILE_SIZE, y * TILE_SIZE))
+            if title == '5':                                                # PowerUps
+                DISPLAY.blit(POWERUP_1 , (x * TILE_SIZE, y * TILE_SIZE))
+            if title == '6':
+                DISPLAY.blit(POWERUP_2 , (x * TILE_SIZE, y * TILE_SIZE))
+            if title == '7':
+                DISPLAY.blit(POWERUP_3, (x * TILE_SIZE, y * TILE_SIZE))
+            if title == '8':
+                DISPLAY.blit(POWERUP_4, (x * TILE_SIZE, y * TILE_SIZE))
+            if title == '9':
+                DISPLAY.blit(POWERUP_5, (x * TILE_SIZE, y * TILE_SIZE))
+            if title == '10':
+                DISPLAY.blit(POWERUP_6, (x * TILE_SIZE, y * TILE_SIZE))
+            if title == '11':
+                DISPLAY.blit(POWERUP_7, (x * TILE_SIZE, y * TILE_SIZE))
+            if title == '12':
+                DISPLAY.blit(POWERUP_8, (x * TILE_SIZE, y * TILE_SIZE))
             if title != '0':
                 tile_rects.append(pygame.Rect(x * TILE_SIZE, y * TILE_SIZE,TILE_SIZE,TILE_SIZE))
             x += 1
