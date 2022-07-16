@@ -7,8 +7,6 @@ from pygame import mixer
 
 #####SOUNDS#####
 HIT_SOUND = mixer.Sound('Sounds/hit.wav')
-# mixer.music.load('Sounds/backgroundMusic.wav')
-# mixer.music.play(-1)
 ################
 
 WIDTH, HEIGHT = 1400,900

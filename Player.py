@@ -24,7 +24,29 @@ BULLET_LEFT = pygame.transform.rotate(pygame.transform.scale(BULLET_IMAGE,(100,1
 BULLET_RIGHT  = pygame.transform.rotate(pygame.transform.scale(BULLET_IMAGE,(100,100)),270)
 ##effects##
 
-WIDTH, HEIGHT = 1400,920
+#####POWERUPS#####
+POWERUP_SIZE = 36
+
+POWERUP_1_IMAGE = pygame.image.load(os.path.join('Assets', 'POWERUPS', 'armor.png'))            # Armadura extra
+POWERUP_2_IMAGE = pygame.image.load(os.path.join('Assets', 'POWERUPS', 'fastshot.png'))         # Tiro rápido
+POWERUP_3_IMAGE = pygame.image.load(os.path.join('Assets', 'POWERUPS', 'invincibility.png'))    # Invulnerabilidade
+POWERUP_4_IMAGE = pygame.image.load(os.path.join('Assets', 'POWERUPS', 'vel.png'))              # Movimento rápido
+POWERUP_5_IMAGE = pygame.image.load(os.path.join('Assets', 'POWERUPS', 'invisibility.png'))     # Invisibilidade
+POWERUP_6_IMAGE = pygame.image.load(os.path.join('Assets', 'POWERUPS', 'mult.png'))             # Tiro múltiplo
+POWERUP_7_IMAGE = pygame.image.load(os.path.join('Assets', 'POWERUPS', 'powerful.png'))         # Tiro poderoso
+POWERUP_8_IMAGE = pygame.image.load(os.path.join('Assets', 'POWERUPS', 'weakening.png'))        # Tiro enfraquecedor
+
+POWERUP_1 = pygame.transform.rotate(pygame.transform.scale(POWERUP_1_IMAGE, (POWERUP_SIZE, POWERUP_SIZE)), 0)
+POWERUP_2 = pygame.transform.rotate(pygame.transform.scale(POWERUP_2_IMAGE, (POWERUP_SIZE, POWERUP_SIZE)), 0)
+POWERUP_3 = pygame.transform.rotate(pygame.transform.scale(POWERUP_3_IMAGE, (POWERUP_SIZE, POWERUP_SIZE)), 0)
+POWERUP_4 = pygame.transform.rotate(pygame.transform.scale(POWERUP_4_IMAGE, (POWERUP_SIZE, POWERUP_SIZE)), 0)
+POWERUP_5 = pygame.transform.rotate(pygame.transform.scale(POWERUP_5_IMAGE, (POWERUP_SIZE, POWERUP_SIZE)), 0)
+POWERUP_6 = pygame.transform.rotate(pygame.transform.scale(POWERUP_6_IMAGE, (POWERUP_SIZE, POWERUP_SIZE)), 0)
+POWERUP_7 = pygame.transform.rotate(pygame.transform.scale(POWERUP_7_IMAGE, (POWERUP_SIZE, POWERUP_SIZE)), 0)
+POWERUP_8 = pygame.transform.rotate(pygame.transform.scale(POWERUP_8_IMAGE, (POWERUP_SIZE, POWERUP_SIZE)), 0)
+################
+
+WIDTH, HEIGHT = 1400, 920
 
 def collision_test(rect,tiles):
         hit_list = []
@@ -178,3 +200,30 @@ class Player():
                 self.bullets.remove(bullet)
             if(bullet.off_screen()):
                 self.bullets.remove(bullet)
+
+
+class POWERUP(pygame.sprite.Sprite):
+    def __init__(self, pos_x, pos_y):
+        global POWERUP_SIZE
+        self.x = pos_x
+        self.y = pos_y
+        self.rect = pygame.Rect(self.x, self.y, POWERUP_SIZE, POWERUP_SIZE)
+        self.color = (255, 0, 0)
+
+    def draw_powerup(self, WIN):
+        self.rect = pygame.Rect(self.x, self.y, POWERUP_SIZE, POWERUP_SIZE)
+        WIN.blit(POWERUP_1, (self.x, self.y))
+
+    # def colision(self, tiles):
+    #     self.x += self.movement
+    #     hit_list = collision_test(self.rect, tiles)
+    #
+    #     for tile in hit_list:
+    #         if self.movement > 0:
+    #             self.rect.right = tile.left
+    #             return True
+    #         elif self.movement < 0:
+    #             self.rect.left = tile.right
+    #             return True
+    #         else:
+    #             return False
