@@ -5,6 +5,7 @@ from pygame import mixer
 #####SOUNDS#####
 pygame.init()
 SHOT_SOUND = mixer.Sound('Sounds/shot.wav')
+HIT_SOUND = mixer.Sound('Sounds/hit.wav')
 ################
 
 ##hulls##
@@ -25,15 +26,22 @@ BULLET_RIGHT  = pygame.transform.rotate(pygame.transform.scale(BULLET_IMAGE,(100
 
 WIDTH, HEIGHT = 1400,920
 
+def collision_test(rect,tiles):
+        hit_list = []
+        for tile in tiles:
+            if rect.colliderect(tile):
+                hit_list.append(tile)
+        return hit_list
+
+
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self,pos_x,pos_y,look_right, look_left,look_up,look_down):
+    def __init__(self,pos_x,pos_y,look_right, look_left):
         self.x = pos_x + 20
         self.y = pos_y + 17
         self.right = look_right
         self.left = look_left
-        self.up = look_up
-        self.down = look_down
+
 
         self.rect = pygame.Rect(self.x, self.y, 15, 10)
         self.color = (255,0,0)
@@ -49,17 +57,29 @@ class Bullet(pygame.sprite.Sprite):
     
     def update(self): #update de position of the bullet
         if self.right == True:
-            self.x += 5
+            self.movement = 5
         elif self.left == True:
-            self.x -= 5
-        if self.up == True:
-            self.y -= 5
-        elif self.down == True:
-            self.y += 5
+            self.movement = -5
 
 
     def off_screen(self): #return True if the bullet is of the screen
         return not(self.x >= 0 and self.x <= WIDTH)
+        
+    def colision(self,tiles):
+        self.x += self.movement
+        hit_list = collision_test(self.rect,tiles)
+
+        for tile in hit_list:
+            if self.movement > 0:
+                self.rect.right = tile.left
+                return True
+            elif self.movement < 0:
+                self.rect.left = tile.right
+                return True
+            else:
+                return False
+
+        
 
 
 class Player():
@@ -87,24 +107,17 @@ class Player():
         self.start = False
         
     def draw_player(self, WIN):
-        pygame.draw.rect(WIN,(0,0,0),self.rect,1)
+        #pygame.draw.rect(WIN,(0,0,0),self.rect,1)
 
         if self.right == True:
             WIN.blit(HULLS_1, (self.rect.x, self.rect.y))
         else:
             WIN.blit(HULLS_2, (self.rect.x, self.rect.y))
 
-    def collision_test(self, tiles):
-        hit_list = []
-        for tile in tiles:
-            if self.rect.colliderect(tile):
-                hit_list.append(tile)
-        return hit_list
-
     def move(self,tiles):
         collision_types = {'top': False, 'bottom': False, 'right': False, 'left': False}
         self.rect.x += self.movement[0]
-        hit_list = self.collision_test(tiles)
+        hit_list = collision_test(self.rect,tiles)
 
         for tile in hit_list:
             if self.movement[0] > 0:
@@ -115,7 +128,7 @@ class Player():
                 collision_types['left'] = True
 
         self.rect.y += self.movement[1]
-        hit_list = self.collision_test(tiles)
+        hit_list = collision_test(self.rect,tiles)
 
         for tile in hit_list:
             if self.movement[1] > 0:
@@ -132,16 +145,16 @@ class Player():
         global HULLS_1
         keys_pressed = pygame.key.get_pressed()
         if keys_pressed[pygame.K_a] and self.rect.x - self.VEL > 0 :  # LEFT
-            self.movement[0] -= self.VEL
+            self.movement[0] = -self.VEL
         if keys_pressed[pygame.K_d] and self.rect.x + self.VEL + 50 < WIDTH: # RIGHT
-            self.movement[0] += self.VEL
+            self.movement[0] = self.VEL
         if keys_pressed[pygame.K_w] and self.rect.y - self.VEL > 0  : # UP
-            self.movement[1] -= self.VEL
+            self.movement[1] = -self.VEL
         if keys_pressed[pygame.K_s] and self.rect.y + self.VEL + 50 < HEIGHT : # DOWN
-            self.movement[1] += self.VEL
+            self.movement[1] = self.VEL
         
         self.rect = self.move(tile_rects)
-        self.shooting()
+        self.shooting(tile_rects)
 
     def cooldown(self):
         if self.cool_down_count >= 60:
@@ -149,19 +162,19 @@ class Player():
         elif self.cool_down_count > 0:
             self.cool_down_count += 1
 
-    def shooting(self):
+    def shooting(self,tiles):
         self.cooldown()
         keys_pressed = pygame.key.get_pressed()
 
         if keys_pressed[pygame.K_SPACE] and self.cool_down_count == 0: #FIRE
             SHOT_SOUND.play()
-            bullet = Bullet(self.rect.x, self.rect.y, self.right, self.left,self.up,self.down)
+            bullet = Bullet(self.rect.x, self.rect.y,self.right,self.left)
             self.bullets.append(bullet) 
             self.cool_down_count = 1
         for bullet in self.bullets:
             Bullet.update(bullet)
+            if(bullet.colision(tiles)):
+                HIT_SOUND.play()
+                self.bullets.remove(bullet)
             if(bullet.off_screen()):
                 self.bullets.remove(bullet)
-            
-    def update(self):
-        self.rect = pygame.Rect(self.x, self.y, self.WIDTH, self.HEIGHT)

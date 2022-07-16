@@ -15,14 +15,14 @@ WIDTH, HEIGHT = 1400,900
 
 health = [3,3]
 
-x = randint(0, 4)
-y = randint(0, 4)
-z = randint(0, 4)
+x = randint(0, 3)
+y = randint(0, 3)
+z = randint(0, 3)
 
 game_map = [x, y, z]
 CURRENT_PLAYER = [0, 1, 2, 3]      # Retornar a posição do player
 
-players = [Player(60,480,0,health[0], game_map, right = True, left= False), Player(900,480,1,health[1],game_map, right = False, left = True)]
+players = [Player(60,380,0,health[0], game_map, right = True, left= False), Player(1100,380,1,health[1],game_map, right = False, left = True)]
 
 def hit(PLAYER1,PLAYER2):
     for bullet in PLAYER2.bullets:
@@ -56,9 +56,13 @@ def threaded_client(CONNECTION,PLAYER):
             players[PLAYER].health = health[PLAYER]
             
             if hit(players[0], players[1]):
-                players[0].rect.move(players[0].p_posx,players[0].p_posy)
 
-                players[1].rect.move(players[1].p_posx,players[1].p_posy)
+                players[0].rect.x = players[0].p_posx
+                players[0].rect.y = players[0].p_posy
+
+                players[1].rect.x = players[1].p_posx
+                players[1].rect.y = players[1].p_posy
+
                 players[PLAYER].start = True
 
             if not DATA:
