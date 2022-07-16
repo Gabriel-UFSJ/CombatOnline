@@ -168,12 +168,16 @@ class Player():
         keys_pressed = pygame.key.get_pressed()
         if keys_pressed[pygame.K_a] and self.rect.x - self.VEL > 0 :  # LEFT
             self.movement[0] = -self.VEL
+            HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE, (TANK_WIDTH, TANK_HEIGHT)), 90)
         if keys_pressed[pygame.K_d] and self.rect.x + self.VEL + 50 < WIDTH: # RIGHT
             self.movement[0] = self.VEL
+            HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE, (TANK_WIDTH, TANK_HEIGHT)), 270)
         if keys_pressed[pygame.K_w] and self.rect.y - self.VEL > 0  : # UP
             self.movement[1] = -self.VEL
+            HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE, (TANK_WIDTH, TANK_HEIGHT)), 360)
         if keys_pressed[pygame.K_s] and self.rect.y + self.VEL + 50 < HEIGHT : # DOWN
             self.movement[1] = self.VEL
+            HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE, (TANK_WIDTH, TANK_HEIGHT)), 180)
         
         self.rect = self.move(tile_rects)
         self.shooting(tile_rects)
