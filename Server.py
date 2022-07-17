@@ -1,4 +1,5 @@
 import pickle
+import random
 import socket
 import threading
 from random import randint
@@ -20,8 +21,24 @@ z = randint(0, 3)
 game_map = [x, y, z]
 CURRENT_PLAYER = [0, 1, 2, 3]      # Retornar a posição do player
 
-players = [Player(60,380,0,health[0], game_map, right = True, left= False), Player(1100,380,1,health[1],game_map, right = False, left = True)]
+# power ups
+# power_info = [creation,pos_x,pos_y,type]
 
+power_info = [False,0,0,0]
+
+def spawn_powerup():
+    power_info[0] = bool(random.choice([True, False]))
+    power_info[1] = randint(0,1400)
+    power_info[2] = randint(0,900)
+    power_info[3] = randint(1,8)
+    return power_info
+
+
+# Players
+players = [Player(60,380,0,health[0], game_map, power_info, right = True, left= False), Player(1100,380,1,health[1],game_map, power_info, right = False, left = True)]
+
+
+#Hit verification
 def hit(PLAYER1,PLAYER2):
     for bullet in PLAYER2.bullets:
         if PLAYER1.rect[0] < bullet.x < PLAYER1.rect[0] + PLAYER1.rect[2] and PLAYER1.rect[1] < bullet.y + 1 < PLAYER1.rect[1] + PLAYER1.rect[3]:
@@ -42,17 +59,45 @@ def hit(PLAYER1,PLAYER2):
                 return True
     return False
 
+#item pickup verification
+def testpickup(PLAYER1,PLAYER2):
+    for powerups in PLAYER1.powers:
+        if PLAYER1.rect[0] < powerups.x < PLAYER1.rect[0] + PLAYER1.rect[2] and PLAYER1.rect[1] < powerups.y + 1 < PLAYER1.rect[1] + PLAYER1.rect[3]:
+            if len(PLAYER1.inventory) <= 5:
+                print("p1 pickup")
+                PLAYER1.inventory.append(powerups)
+                PLAYER1.powers.remove(powerups)
+    
+    for powerups in PLAYER1.powers:
+        if PLAYER2.rect[0] < powerups.x < PLAYER2.rect[0] + PLAYER2.rect[2] and PLAYER2.rect[1] < powerups.y + 1 < PLAYER2.rect[1] + PLAYER2.rect[3]:
+            if len(PLAYER1.inventory) <= 5:
+                print("p2 pickup")
+                PLAYER1.inventory.append(powerups)
+                PLAYER1.powers.remove(powerups)
+
+#threading for client
 def threaded_client(CONNECTION,PLAYER):
     global CURRENT_PLAYER
-
+    power_number = 0
     CONNECTION.send(pickle.dumps(players[PLAYER]))
     REPLY = ""
     while True:
         try:
-            DATA = pickle.loads(CONNECTION.recv(2048))
+
+            DATA = pickle.loads(CONNECTION.recv(4096))
             players[PLAYER] = DATA
             players[PLAYER].health = health[PLAYER]
-            
+            players[PLAYER].power_info[0] = False
+
+            if power_number <= 5:
+                power_number += 1
+                random_power = spawn_powerup()
+                print(power_number)
+
+            players[PLAYER].power_info = random_power
+
+            testpickup(players[0], players[1])
+
             if hit(players[0], players[1]):
 
                 players[0].rect.x = players[0].p_posx
@@ -62,6 +107,8 @@ def threaded_client(CONNECTION,PLAYER):
                 players[1].rect.y = players[1].p_posy
 
                 players[PLAYER].start = True
+            
+
 
             if not DATA:
                 print("Disconnected")
@@ -74,6 +121,7 @@ def threaded_client(CONNECTION,PLAYER):
     print("Connection lost")
     CURRENT_PLAYER.append(PLAYER)
     CONNECTION.close()
+
 
 def main():
     global CURRENT_PLAYER

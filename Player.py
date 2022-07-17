@@ -105,7 +105,7 @@ class Bullet(pygame.sprite.Sprite):
 
 
 class Player():
-    def __init__(self,X,Y,ID,health,map,right,left):
+    def __init__(self,X,Y,ID,health,map,power_info,right,left):
         self.ID = ID
         #placar
         self.p_posx = X
@@ -127,6 +127,10 @@ class Player():
         self.map = map
         #server fill
         self.start = False
+        #powerups
+        self.power_info = power_info
+        self.powers = []
+        self.inventory = []
         
     def draw_player(self, WIN):
         #pygame.draw.rect(WIN,(0,0,0),self.rect,1)
@@ -205,18 +209,31 @@ class Player():
             if(bullet.off_screen()):
                 self.bullets.remove(bullet)
 
+    def power_create(self,tiles):
+        if self.power_info[0] == True:
+            x = int(self.power_info[1])
+            y = int(self.power_info[2])
+            rect = pygame.Rect(x,y,POWERUP_SIZE ,POWERUP_SIZE)
+            hit_list = collision_test(rect, tiles)
+            if not hit_list:
+                print("create")
+                power = POWERUP(self.power_info[1],self.power_info[2],self.power_info[3])
+                self.powers.append(power)
+
 
 class POWERUP(pygame.sprite.Sprite):
-    def __init__(self, pos_x, pos_y):
+    def __init__(self, pos_x, pos_y,power_type):
         global POWERUP_SIZE
         self.x = pos_x
         self.y = pos_y
+        self.type = power_type
         self.rect = pygame.Rect(self.x, self.y, POWERUP_SIZE, POWERUP_SIZE)
         self.color = (255, 0, 0)
 
     def draw_powerup(self, WIN):
-        self.rect = pygame.Rect(self.x, self.y, POWERUP_SIZE, POWERUP_SIZE)
+        pygame.draw.rect(WIN,(0,0,0),self.rect,1)
         WIN.blit(POWERUP_1, (self.x, self.y))
+    
 
     # def colision(self, tiles):
     #     self.x += self.movement

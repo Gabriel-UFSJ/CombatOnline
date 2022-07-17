@@ -56,6 +56,9 @@ def draw_window(WIN, DISPLAY, PLAYER1, PLAYER2):
     for bullet in PLAYER2.bullets: #print bullets for player2
         bullet.draw_bullet(WIN)
 
+    for powerup in PLAYER1.powers:
+        powerup.draw_powerup(WIN)       
+
     PLAYER1.draw_player(WIN) #drawing player1
     PLAYER2.draw_player(WIN) #drawing player2
 
@@ -170,6 +173,7 @@ def main():
         i = start_round(WIN,PLAYER1,i)
 
         PLAYER1.keys(tile_rects)
+        PLAYER1.power_create(tile_rects)
         
         draw_window(WIN, DISPLAY, PLAYER1, PLAYER2)
             
