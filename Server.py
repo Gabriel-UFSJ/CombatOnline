@@ -12,7 +12,7 @@ HIT_SOUND = mixer.Sound('Sounds/hit.wav')
 
 WIDTH, HEIGHT = 1400,900
 
-health = [3,3]
+health = [3, 3, 3, 3]
 
 x = randint(0, 3)
 y = randint(0, 3)
@@ -35,32 +35,110 @@ def spawn_powerup():
 
 
 # Players
-players = [Player(60,380,0,health[0], game_map, power_info, right = True, left= False), Player(1100,380,1,health[1],game_map, power_info, right = False, left = True)]
+players = [Player(60, 380, 0, health[0], game_map, power_info, right=True, left=False, up=False, down=False),
+           Player(1100, 380, 1, health[1], game_map, power_info, right=False, left=True, up=False, down=False),
+           Player(630, 160, 2, health[2], game_map, power_info, right=False, left=False, up=True, down=False),
+           Player(630, 560, 3, health[3], game_map, power_info, right=False, left=False, up=False, down=True)]
 
 
 #Hit verification
-def hit(PLAYER1,PLAYER2):
+def hit(PLAYER1, PLAYER2, PLAYER3, PLAYER4):
+    # PLAYERS 3 E 4
+    for bullet in PLAYER4.bullets:
+        if PLAYER1.rect[0] < bullet.x < PLAYER1.rect[0] + PLAYER1.rect[2] and PLAYER1.rect[1] < bullet.y + 1 < PLAYER1.rect[1] + PLAYER1.rect[3]:
+            if (PLAYER1.health > 0):
+                HIT_SOUND.play()
+                print("player1 lost health")
+                health[0] -= 1
+                PLAYER1.bullets.remove(bullet)
+                return True
+        if PLAYER2.rect[0] < bullet.x < PLAYER2.rect[0] + PLAYER2.rect[2] and PLAYER2.rect[1] < bullet.y + 1 < PLAYER2.rect[1] + PLAYER2.rect[3]:
+            if (PLAYER2.health > 0):
+                HIT_SOUND.play()
+                print("player2 lost health")
+                health[1] -= 1
+                PLAYER2.bullets.remove(bullet)
+                return True
+        if PLAYER3.rect[0] < bullet.x < PLAYER3.rect[0] + PLAYER3.rect[2] and PLAYER3.rect[1] < bullet.y + 1 < PLAYER3.rect[1] + PLAYER3.rect[3]:
+            if (PLAYER3.health > 0):
+                HIT_SOUND.play()
+                print("player3 lost health")
+                health[2] -= 1
+                PLAYER3.bullets.remove(bullet)
+                return True
+
+    for bullet in PLAYER3.bullets:
+        if PLAYER1.rect[0] < bullet.x < PLAYER1.rect[0] + PLAYER1.rect[2] and PLAYER1.rect[1] < bullet.y + 1 < PLAYER1.rect[1] + PLAYER1.rect[3]:
+            if (PLAYER1.health > 0):
+                HIT_SOUND.play()
+                print("player1 lost health")
+                health[0] -= 1
+                PLAYER1.bullets.remove(bullet)
+                return True
+        if PLAYER2.rect[0] < bullet.x < PLAYER2.rect[0] + PLAYER2.rect[2] and PLAYER2.rect[1] < bullet.y + 1 < PLAYER2.rect[1] + PLAYER2.rect[3]:
+            if (PLAYER2.health > 0):
+                HIT_SOUND.play()
+                print("player2 lost health")
+                health[1] -= 1
+                PLAYER2.bullets.remove(bullet)
+                return True
+        if PLAYER4.rect[0] < bullet.x < PLAYER4.rect[0] + PLAYER4.rect[2] and PLAYER4.rect[1] < bullet.y + 1 < PLAYER4.rect[1] + PLAYER4.rect[3]:
+            if (PLAYER4.health > 0):
+                HIT_SOUND.play()
+                print("player4 lost health")
+                health[3] -= 1
+                PLAYER4.bullets.remove(bullet)
+                return True
+
     for bullet in PLAYER2.bullets:
         if PLAYER1.rect[0] < bullet.x < PLAYER1.rect[0] + PLAYER1.rect[2] and PLAYER1.rect[1] < bullet.y + 1 < PLAYER1.rect[1] + PLAYER1.rect[3]:
             if (PLAYER1.health > 0):
                 HIT_SOUND.play()
                 print("player1 lost health")
                 health[0] -= 1
-                PLAYER2.bullets.remove(bullet)
+                PLAYER1.bullets.remove(bullet)
+                return True
+        if PLAYER3.rect[0] < bullet.x < PLAYER3.rect[0] + PLAYER3.rect[2] and PLAYER3.rect[1] < bullet.y + 1 < PLAYER3.rect[1] + PLAYER3.rect[3]:
+            if (PLAYER3.health > 0):
+                HIT_SOUND.play()
+                print("player3 lost health")
+                health[2] -= 1
+                PLAYER3.bullets.remove(bullet)
+                return True
+        if PLAYER4.rect[0] < bullet.x < PLAYER4.rect[0] + PLAYER4.rect[2] and PLAYER4.rect[1] < bullet.y + 1 < PLAYER4.rect[1] + PLAYER4.rect[3]:
+            if (PLAYER4.health > 0):
+                HIT_SOUND.play()
+                print("player4 lost health")
+                health[3] -= 1
+                PLAYER4.bullets.remove(bullet)
                 return True
 
     for bullet in PLAYER1.bullets:
         if PLAYER2.rect[0] < bullet.x < PLAYER2.rect[0] + PLAYER2.rect[2] and PLAYER2.rect[1] < bullet.y + 1 < PLAYER2.rect[1] + PLAYER2.rect[3]:
-            if (PLAYER1.health > 0):
+            if (PLAYER2.health > 0):
                 HIT_SOUND.play()
                 print("player2 lost health")
                 health[1] -= 1 
-                PLAYER1.bullets.remove(bullet)
+                PLAYER2.bullets.remove(bullet)
+                return True
+        if PLAYER3.rect[0] < bullet.x < PLAYER3.rect[0] + PLAYER3.rect[2] and PLAYER3.rect[1] < bullet.y + 1 < PLAYER3.rect[1] + PLAYER3.rect[3]:
+            if (PLAYER3.health > 0):
+                HIT_SOUND.play()
+                print("player3 lost health")
+                health[2] -= 1
+                PLAYER3.bullets.remove(bullet)
+                return True
+        if PLAYER4.rect[0] < bullet.x < PLAYER4.rect[0] + PLAYER4.rect[2] and PLAYER4.rect[1] < bullet.y + 1 < PLAYER4.rect[1] + PLAYER4.rect[3]:
+            if (PLAYER4.health > 0):
+                HIT_SOUND.play()
+                print("player4 lost health")
+                health[3] -= 1
+                PLAYER4.bullets.remove(bullet)
                 return True
     return False
 
 #item pickup verification
-def testpickup(PLAYER1,PLAYER2):
+def testpickup(PLAYER1,PLAYER2,PLAYER3,PLAYER4):
     for powerups in PLAYER1.powers:
         if PLAYER1.rect[0] < powerups.x < PLAYER1.rect[0] + PLAYER1.rect[2] and PLAYER1.rect[1] < powerups.y + 1 < PLAYER1.rect[1] + PLAYER1.rect[3]:
             if len(PLAYER1.inventory) <= 5:
@@ -68,12 +146,26 @@ def testpickup(PLAYER1,PLAYER2):
                 PLAYER1.inventory.append(powerups)
                 PLAYER1.powers.remove(powerups)
     
-    for powerups in PLAYER1.powers:
+    for powerups in PLAYER2.powers:
         if PLAYER2.rect[0] < powerups.x < PLAYER2.rect[0] + PLAYER2.rect[2] and PLAYER2.rect[1] < powerups.y + 1 < PLAYER2.rect[1] + PLAYER2.rect[3]:
-            if len(PLAYER1.inventory) <= 5:
+            if len(PLAYER2.inventory) <= 5:
                 print("p2 pickup")
-                PLAYER1.inventory.append(powerups)
-                PLAYER1.powers.remove(powerups)
+                PLAYER2.inventory.append(powerups)
+                PLAYER2.powers.remove(powerups)
+# PLAYERS 3 E 4
+    for powerups in PLAYER3.powers:
+        if PLAYER3.rect[0] < powerups.x < PLAYER3.rect[0] + PLAYER3.rect[2] and PLAYER3.rect[1] < powerups.y + 1 < PLAYER3.rect[1] + PLAYER3.rect[3]:
+            if len(PLAYER3.inventory) <= 5:
+                print("p3 pickup")
+                PLAYER3.inventory.append(powerups)
+                PLAYER3.powers.remove(powerups)
+
+    for powerups in PLAYER4.powers:
+        if PLAYER4.rect[0] < powerups.x < PLAYER4.rect[0] + PLAYER4.rect[2] and PLAYER4.rect[1] < powerups.y + 1 < PLAYER4.rect[1] + PLAYER4.rect[3]:
+            if len(PLAYER4.inventory) <= 5:
+                print("p4 pickup")
+                PLAYER4.inventory.append(powerups)
+                PLAYER4.powers.remove(powerups)
 
 #threading for client
 def threaded_client(CONNECTION,PLAYER):
@@ -96,9 +188,9 @@ def threaded_client(CONNECTION,PLAYER):
 
             players[PLAYER].power_info = random_power
 
-            testpickup(players[0], players[1])
+            testpickup(players[0], players[1], players[2], players[3])
 
-            if hit(players[0], players[1]):
+            if hit(players[0], players[1], players[2], players[3]):
 
                 players[0].rect.x = players[0].p_posx
                 players[0].rect.y = players[0].p_posy
@@ -106,9 +198,13 @@ def threaded_client(CONNECTION,PLAYER):
                 players[1].rect.x = players[1].p_posx
                 players[1].rect.y = players[1].p_posy
 
-                players[PLAYER].start = True
-            
+                players[2].rect.x = players[2].p_posx
+                players[2].rect.y = players[2].p_posy
 
+                players[3].rect.x = players[3].p_posx
+                players[3].rect.y = players[3].p_posy
+
+                players[PLAYER].start = True
 
             if not DATA:
                 print("Disconnected")
@@ -149,14 +245,12 @@ def main():
         elif 1 in CURRENT_PLAYER:
             CURRENT_PLAYER.remove(1)
             threading.Thread(target=threaded_client, args=(CONNECTION, 1)).start()
-        # elif 2 in CURRENT_PLAYER:                                                 # Adicionar quando aceitar 4 players
-        #     print("Posição 2 ocupada")
-        #     threading.Thread(target=threaded_client, args=(CONNECTION, 2)).start()
-        #     CURRENT_PLAYER.remove(2)
-        # elif 3 in CURRENT_PLAYER:
-        #     print("Posição 3 ocupada")
-        #     threading.Thread(target=threaded_client, args=(CONNECTION, 3)).start()
-        #     CURRENT_PLAYER.remove(3)
+        elif 2 in CURRENT_PLAYER:                                                 # Adicionar quando aceitar 4 players
+            CURRENT_PLAYER.remove(2)
+            threading.Thread(target=threaded_client, args=(CONNECTION, 2)).start()
+        elif 3 in CURRENT_PLAYER:
+            CURRENT_PLAYER.remove(3)
+            threading.Thread(target=threaded_client, args=(CONNECTION, 3)).start()
         else:
             CONNECTION.close()
             print("Full session")

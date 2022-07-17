@@ -48,7 +48,7 @@ POWERUP_8 = pygame.transform.rotate(pygame.transform.scale(POWERUP_8_IMAGE, (POW
 
 WIDTH, HEIGHT = 1400, 920
 
-def collision_test(rect,tiles):
+def collision_test(rect, tiles):
         hit_list = []
         for tile in tiles:
             if rect.colliderect(tile):
@@ -58,7 +58,7 @@ def collision_test(rect,tiles):
 
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self,pos_x,pos_y,look_right, look_left):
+    def __init__(self, pos_x, pos_y, look_right, look_left):
         self.x = pos_x + 20
         self.y = pos_y + 17
         self.right = look_right
@@ -105,23 +105,23 @@ class Bullet(pygame.sprite.Sprite):
 
 
 class Player():
-    def __init__(self,X,Y,ID,health,map,power_info,right,left):
+    def __init__(self, X, Y, ID, health, map, power_info, right, left, up, down):
         self.ID = ID
         #placar
         self.p_posx = X
         self.p_posy = Y
         #mov
         self.movement = [0, 0]
-        self.VEL = 1.5 #velocity of player
+        self.VEL = 1.5              # velocity of player
         self.right = right
         self.left = left
-        self.up = False
-        self.down = False
+        self.up = up
+        self.down = down
         #bullets
-        self.bullets = [] #list of bullets
-        self.cool_down_count = 0 #cool down for shooting
+        self.bullets = []           # list of bullets
+        self.cool_down_count = 0    # cool down for shooting
         #Health
-        self.rect = pygame.Rect(X,Y,HULLS_1.get_width() ,HULLS_1.get_height())
+        self.rect = pygame.Rect(X, Y, HULLS_1.get_width(), HULLS_1.get_height())
         self.health = health
         #map
         self.map = map
