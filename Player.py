@@ -200,8 +200,11 @@ class Player():
         global HULLS_1, WEAPON_1
         keys_pressed = pygame.key.get_pressed()
         self.use_item()
+
         if self.move_fast:
             self.VEL = 2.5
+        else:
+            self.VEL = 1.5
 
         if keys_pressed[pygame.K_a] and self.rect.x - self.VEL > 0 :  # LEFT
             self.movement[0] = -self.VEL
@@ -261,62 +264,71 @@ class Player():
             if self.inventory:
                 print(self.inventory[pos].type)
                 if self.inventory[pos].type == 1: # Armadura extra
+                    print("armor")
                     self.extra_armor = True
                     self.inventory.remove(self.inventory[pos])
-                    print("armor")
+                    self.cool_down_count = 1
 
                 elif self.inventory[pos].type == 2: # Tiro rápido
                     self.fast_shoot = True
                     print("fast_shoot")
                     self.inventory.remove(self.inventory[pos])
+                    self.cool_down_count = 1
 
                 elif self.inventory[pos].type == 3: # Invulnerabilidade
                     self.invulnerable = True
                     print("invu")
                     self.inventory.remove(self.inventory[pos])
+                    self.cool_down_count = 1
 
                 elif self.inventory[pos].type == 4: # Movimento rápido
                     self.move_fast = True
                     print("move_fast")
                     self.inventory.remove(self.inventory[pos])
+                    self.cool_down_count = 1
 
                 elif self.inventory[pos].type == 5: # Invisibilidade
                     self.invisibility = True
                     print("invisivel")
                     self.inventory.remove(self.inventory[pos])
+                    self.cool_down_count = 1
 
                 elif self.inventory[pos].type == 6: # Tiro múltiplo
                     self.multi_shoot = True
                     print("multi shoot")
                     self.inventory.remove(self.inventory[pos])
+                    self.cool_down_count = 1
 
                 elif self.inventory[pos].type == 7: # Tiro poderoso
                     self.power_shoot = True
                     print("power shot")
                     self.inventory.remove(self.inventory[pos])
+                    self.cool_down_count = 1
 
                 elif self.inventory[pos].type == 8: # Tiro enfraquecedor
                     self.weakening_shoot = True
                     print("tiro enfrac")
                     self.inventory.remove(self.inventory[pos])
-
+                    self.cool_down_count = 1
             else:
                 print("inventory empty")
 
     def shooting(self,tiles):
         self.cooldown()
         keys_pressed = pygame.key.get_pressed()
-        if self.multi_shoot:
-            num_bullet = 3
-        else :
-            num_bullet = 0
-
+        
         if keys_pressed[pygame.K_SPACE] and self.cool_down_count == 0: #FIRE
             SHOT_SOUND.play()
-            for num in range(len(num_bullet)) :
+            bullet = Bullet(self.rect.x, self.rect.y,self.right,self.left,self.fast_shoot,self.power_shoot)
+            self.bullets.append(bullet) 
+            self.cool_down_count = 1
+            if self.multi_shoot:
+                bullet = Bullet(self.rect.x, self.rect.y,self.right,self.left,self.fast_shoot,self.power_shoot)
+                self.bullets.append(bullet) 
                 bullet = Bullet(self.rect.x, self.rect.y,self.right,self.left,self.fast_shoot,self.power_shoot)
                 self.bullets.append(bullet) 
                 self.cool_down_count = 1
+                
         for bullet in self.bullets:
             Bullet.update(bullet)
             if(bullet.colision(tiles)):

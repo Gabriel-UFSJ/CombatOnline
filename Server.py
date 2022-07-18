@@ -255,6 +255,8 @@ def threaded_client(CONNECTION,PLAYER):
             testpickup(players[0], players[1], players[2], players[3])
 
             if hit(players[0], players[1], players[2], players[3]):
+                for i in range(4):
+                    players[i].bullets = []
 
                 players[0].rect.x = players[0].p_posx
                 players[0].rect.y = players[0].p_posy
