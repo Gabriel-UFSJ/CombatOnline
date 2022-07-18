@@ -23,10 +23,10 @@ DARKRED = (139, 0, 0)
 ###########Assets###########
 
 ##tiles##
-TILE_1_IMAGE = pygame.image.load(os.path.join('Assets', 'TILES', 'iron.png'))
-TILE_2_IMAGE = pygame.image.load(os.path.join('Assets', 'TILES', 'iron_vent.png'))
-TILE_3_IMAGE = pygame.image.load(os.path.join('Assets', 'TILES', 'cooper.png'))
-TILE_4_IMAGE = pygame.image.load(os.path.join('Assets', 'TILES', 'night.png'))
+TILE_1_IMAGE = pygame.image.load(os.path.join('Assets', 'TILES', 'iron.png')).convert_alpha()
+TILE_2_IMAGE = pygame.image.load(os.path.join('Assets', 'TILES', 'iron_vent.png')).convert_alpha()
+TILE_3_IMAGE = pygame.image.load(os.path.join('Assets', 'TILES', 'cooper.png')).convert_alpha()
+TILE_4_IMAGE = pygame.image.load(os.path.join('Assets', 'TILES', 'night.png')).convert_alpha()
 
 TILE_SIZE = 36
 
@@ -64,9 +64,10 @@ def draw_window(WIN, DISPLAY, PLAYER1, PLAYER2, PLAYER3, PLAYER4):
         powerup.draw_powerup(WIN)
 
     PLAYER1.draw_player(WIN)    #drawing player1
-    PLAYER2.draw_player(WIN)    #drawing player2
-    PLAYER3.draw_player(WIN)    #drawing player3
-    PLAYER4.draw_player(WIN)    #drawing player4
+
+    if not PLAYER2.invisibility: PLAYER2.draw_player(WIN)    #drawing player2
+    if not PLAYER3.invisibility: PLAYER3.draw_player(WIN)    #drawing player3
+    if not PLAYER4.invisibility: PLAYER4.draw_player(WIN)    #drawing player4
 
     PLAYER1_HEALTH = MYFONT.render(str(PLAYER1.health), 1, (0, 0, 0))
     PLAYER2_HEALTH = MYFONT.render(str(PLAYER2.health), 1, (0, 0, 0))

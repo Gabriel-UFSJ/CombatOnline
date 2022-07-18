@@ -12,6 +12,7 @@ HIT_SOUND = mixer.Sound('Sounds/hit.wav')
 
 WIDTH, HEIGHT = 1400,900
 
+
 health = [3, 3, 3, 3]
 
 x = randint(0, 3)
@@ -46,96 +47,167 @@ def hit(PLAYER1, PLAYER2, PLAYER3, PLAYER4):
     # PLAYERS 3 E 4
     for bullet in PLAYER4.bullets:
         if PLAYER1.rect[0] < bullet.x < PLAYER1.rect[0] + PLAYER1.rect[2] and PLAYER1.rect[1] < bullet.y + 1 < PLAYER1.rect[1] + PLAYER1.rect[3]:
-            if (PLAYER1.health > 0):
+            if (PLAYER1.health > 0) and not(PLAYER1.extra_armor) and not(PLAYER1.invulnerable):
+                if PLAYER4.weakening_shoot:
+                    if PLAYER1.inventory:
+                        pos = len(PLAYER1.inventory) - 1
+                        PLAYER4.inventory.append(PLAYER1.inventory[pos])
+                        PLAYER1.inventory.remove(PLAYER1.inventory[pos])
                 HIT_SOUND.play()
                 print("player1 lost health")
                 health[0] -= 1
                 PLAYER4.bullets.remove(bullet)
                 return True
+            PLAYER1.extra_armor = False
         if PLAYER2.rect[0] < bullet.x < PLAYER2.rect[0] + PLAYER2.rect[2] and PLAYER2.rect[1] < bullet.y + 1 < PLAYER2.rect[1] + PLAYER2.rect[3]:
-            if (PLAYER2.health > 0):
+            if (PLAYER2.health > 0) and not(PLAYER2.extra_armor) and not(PLAYER2.invulnerable):
+                if PLAYER4.weakening_shoot:
+                    if PLAYER2.inventory:
+                        pos = len(PLAYER1.inventory) - 1
+                        PLAYER4.inventory.append(PLAYER1.inventory[pos])
+                        PLAYER2.inventory.remove(PLAYER1.inventory[pos])
                 HIT_SOUND.play()
                 print("player2 lost health")
                 health[1] -= 1
                 PLAYER4.bullets.remove(bullet)
                 return True
+            PLAYER2.extra_armor = False
         if PLAYER3.rect[0] < bullet.x < PLAYER3.rect[0] + PLAYER3.rect[2] and PLAYER3.rect[1] < bullet.y + 1 < PLAYER3.rect[1] + PLAYER3.rect[3]:
-            if (PLAYER3.health > 0):
+            if (PLAYER3.health > 0) and not(PLAYER3.extra_armor) and not(PLAYER3.invulnerable):
+                if PLAYER4.weakening_shoot:
+                    if PLAYER3.inventory:
+                        pos = len(PLAYER1.inventory) - 1
+                        PLAYER4.inventory.append(PLAYER1.inventory[pos])
+                        PLAYER3.inventory.remove(PLAYER1.inventory[pos])
                 HIT_SOUND.play()
                 print("player3 lost health")
                 health[2] -= 1
                 PLAYER4.bullets.remove(bullet)
                 return True
+            PLAYER3.extra_armor = False
 
     for bullet in PLAYER3.bullets:
         if PLAYER1.rect[0] < bullet.x < PLAYER1.rect[0] + PLAYER1.rect[2] and PLAYER1.rect[1] < bullet.y + 1 < PLAYER1.rect[1] + PLAYER1.rect[3]:
-            if (PLAYER1.health > 0):
+            if (PLAYER1.health > 0) and not(PLAYER1.extra_armor) and not(PLAYER1.invulnerable):
+                if PLAYER3.weakening_shoot:
+                    if PLAYER1.inventory:
+                        pos = len(PLAYER1.inventory) - 1
+                        PLAYER3.inventory.append(PLAYER1.inventory[pos])
+                        PLAYER1.inventory.remove(PLAYER1.inventory[pos])
                 HIT_SOUND.play()
                 print("player1 lost health")
                 health[0] -= 1
                 PLAYER3.bullets.remove(bullet)
                 return True
+            PLAYER1.extra_armor = False
         if PLAYER2.rect[0] < bullet.x < PLAYER2.rect[0] + PLAYER2.rect[2] and PLAYER2.rect[1] < bullet.y + 1 < PLAYER2.rect[1] + PLAYER2.rect[3]:
-            if (PLAYER2.health > 0):
+            if (PLAYER2.health > 0) and not(PLAYER2.extra_armor) and not(PLAYER2.invulnerable):
+                if PLAYER3.weakening_shoot:
+                    if PLAYER2.inventory:
+                        pos = len(PLAYER1.inventory) - 1
+                        PLAYER3.inventory.append(PLAYER1.inventory[pos])
+                        PLAYER2.inventory.remove(PLAYER1.inventory[pos])
                 HIT_SOUND.play()
                 print("player2 lost health")
                 health[1] -= 1
                 PLAYER3.bullets.remove(bullet)
                 return True
+            PLAYER2.extra_armor = False
         if PLAYER4.rect[0] < bullet.x < PLAYER4.rect[0] + PLAYER4.rect[2] and PLAYER4.rect[1] < bullet.y + 1 < PLAYER4.rect[1] + PLAYER4.rect[3]:
-            if (PLAYER4.health > 0):
+            if (PLAYER4.health > 0) and not(PLAYER4.extra_armor) and not(PLAYER4.invulnerable):
+                if PLAYER3.weakening_shoot:
+                    if PLAYER4.inventory:
+                        pos = len(PLAYER1.inventory) - 1
+                        PLAYER3.inventory.append(PLAYER1.inventory[pos])
+                        PLAYER4.inventory.remove(PLAYER1.inventory[pos])
                 HIT_SOUND.play()
                 print("player4 lost health")
                 health[3] -= 1
                 PLAYER3.bullets.remove(bullet)
                 return True
+            PLAYER4.extra_armor = False
 
     for bullet in PLAYER2.bullets:
         if PLAYER1.rect[0] < bullet.x < PLAYER1.rect[0] + PLAYER1.rect[2] and PLAYER1.rect[1] < bullet.y + 1 < PLAYER1.rect[1] + PLAYER1.rect[3]:
-            if (PLAYER1.health > 0):
+            if (PLAYER1.health > 0) and not(PLAYER1.extra_armor) and not(PLAYER1.invulnerable):
+                if PLAYER2.weakening_shoot:
+                    if PLAYER1.inventory:
+                        pos = len(PLAYER1.inventory) - 1
+                        PLAYER2.inventory.append(PLAYER1.inventory[pos])
+                        PLAYER1.inventory.remove(PLAYER1.inventory[pos])
                 HIT_SOUND.play()
                 print("player1 lost health")
                 health[0] -= 1
                 PLAYER2.bullets.remove(bullet)
                 return True
         if PLAYER3.rect[0] < bullet.x < PLAYER3.rect[0] + PLAYER3.rect[2] and PLAYER3.rect[1] < bullet.y + 1 < PLAYER3.rect[1] + PLAYER3.rect[3]:
-            if (PLAYER3.health > 0):
+            if (PLAYER3.health > 0) and not(PLAYER3.extra_armor) and not(PLAYER3.invulnerable):
+                if PLAYER2.weakening_shoot:
+                    if PLAYER3.inventory:
+                        pos = len(PLAYER1.inventory) - 1
+                        PLAYER2.inventory.append(PLAYER1.inventory[pos])
+                        PLAYER3.inventory.remove(PLAYER1.inventory[pos])
                 HIT_SOUND.play()
                 print("player3 lost health")
                 health[2] -= 1
                 PLAYER2.bullets.remove(bullet)
                 return True
+            PLAYER2.extra_armor = False
         if PLAYER4.rect[0] < bullet.x < PLAYER4.rect[0] + PLAYER4.rect[2] and PLAYER4.rect[1] < bullet.y + 1 < PLAYER4.rect[1] + PLAYER4.rect[3]:
-            if (PLAYER4.health > 0):
+            if (PLAYER4.health > 0) and not(PLAYER4.extra_armor) and not(PLAYER4.invulnerable):
+                if PLAYER2.weakening_shoot:
+                    if PLAYER4.inventory:
+                        pos = len(PLAYER1.inventory) - 1
+                        PLAYER2.inventory.append(PLAYER1.inventory[pos])
+                        PLAYER4.inventory.remove(PLAYER1.inventory[pos])
                 HIT_SOUND.play()
                 print("player4 lost health")
                 health[3] -= 1
                 PLAYER2.bullets.remove(bullet)
                 return True
+            PLAYER4.extra_armor = False
 
     for bullet in PLAYER1.bullets:
         if PLAYER2.rect[0] < bullet.x < PLAYER2.rect[0] + PLAYER2.rect[2] and PLAYER2.rect[1] < bullet.y + 1 < PLAYER2.rect[1] + PLAYER2.rect[3]:
-            if (PLAYER2.health > 0):
+            if (PLAYER2.health > 0) and not(PLAYER2.extra_armor) and not(PLAYER2.invulnerable):
+                if PLAYER1.weakening_shoot:
+                    if PLAYER2.inventory:
+                        pos = len(PLAYER1.inventory) - 1
+                        PLAYER1.inventory.append(PLAYER1.inventory[pos])
+                        PLAYER2.inventory.remove(PLAYER1.inventory[pos])
                 HIT_SOUND.play()
                 print("player2 lost health")
                 health[1] -= 1 
                 PLAYER1.bullets.remove(bullet)
                 return True
+            PLAYER2.extra_armor = False
         if PLAYER3.rect[0] < bullet.x < PLAYER3.rect[0] + PLAYER3.rect[2] and PLAYER3.rect[1] < bullet.y + 1 < PLAYER3.rect[1] + PLAYER3.rect[3]:
-            if (PLAYER3.health > 0):
+            if (PLAYER3.health > 0) and not(PLAYER3.extra_armor) and not(PLAYER3.invulnerable):
+                if PLAYER1.weakening_shoot:
+                    if PLAYER3.inventory:
+                        pos = len(PLAYER1.inventory) - 1
+                        PLAYER1.inventory.append(PLAYER1.inventory[pos])
+                        PLAYER3.inventory.remove(PLAYER1.inventory[pos])
                 HIT_SOUND.play()
                 print("player3 lost health")
                 health[2] -= 1
                 PLAYER1.bullets.remove(bullet)
                 return True
+            PLAYER3.extra_armor = False
         if PLAYER4.rect[0] < bullet.x < PLAYER4.rect[0] + PLAYER4.rect[2] and PLAYER4.rect[1] < bullet.y + 1 < PLAYER4.rect[1] + PLAYER4.rect[3]:
-            if (PLAYER4.health > 0):
+            if (PLAYER4.health > 0) and not(PLAYER4.extra_armor) and not(PLAYER4.invulnerable):
+                if PLAYER1.weakening_shoot:
+                    if PLAYER4.inventory:
+                        pos = len(PLAYER1.inventory) - 1
+                        PLAYER1.inventory.append(PLAYER1.inventory[pos])
+                        PLAYER4.inventory.remove(PLAYER1.inventory[pos])
                 HIT_SOUND.play()
                 print("player4 lost health")
                 health[3] -= 1
                 PLAYER1.bullets.remove(bullet)
                 return True
-    #return False
+            PLAYER4.extra_armor = False
+    return False
 
 #item pickup verification
 def testpickup(PLAYER1,PLAYER2,PLAYER3,PLAYER4):

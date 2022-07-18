@@ -68,11 +68,13 @@ def collision_test(rect, tiles):
 
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, pos_x, pos_y, look_right, look_left):
+    def __init__(self, pos_x, pos_y, look_right, look_left,fast_shoot,power_shoot):
         self.x = pos_x + 20
         self.y = pos_y + 17
         self.right = look_right
         self.left = look_left
+        self.fast_shoot = fast_shoot
+        self.power_shoot = power_shoot
 
 
         self.rect = pygame.Rect(self.x, self.y, 15, 10)
@@ -83,15 +85,21 @@ class Bullet(pygame.sprite.Sprite):
         #pygame.draw.rect(WIN,(0,0,0),self.rect, 1)
         
         if self.right == True:
-            WIN.blit(BULLET_RIGHT,(self.x ,self.y - 20))
+            WIN.blit(BULLET_RIGHT,(self.x - 40 ,self.y -45))
         elif self.left == True:
-            WIN.blit(BULLET_LEFT, (self.x ,self.y - 20))
+            WIN.blit(BULLET_LEFT, (self.x - 40 ,self.y -45))
     
     def update(self): #update de position of the bullet
         if self.right == True:
-            self.movement = 5
+            if self.fast_shoot:
+                self.movement = 10
+            else:
+                self.movement = 5
         elif self.left == True:
-            self.movement = -5
+            if self.fast_shoot:
+                self.movement = -10
+            else:
+                self.movement = -5
 
 
     def off_screen(self): #return True if the bullet is of the screen
@@ -99,7 +107,8 @@ class Bullet(pygame.sprite.Sprite):
         
     def colision(self,tiles):
         self.x += self.movement
-        hit_list = collision_test(self.rect,tiles)
+        if not self.power_shoot: 
+            hit_list = collision_test(self.rect,tiles)
 
         for tile in hit_list:
             if self.movement > 0:
@@ -141,11 +150,23 @@ class Player():
         self.power_info = power_info
         self.powers = []
         self.inventory = []
+        #powers
+        self.cool_down_item = 0
+        self.extra_armor = False
+        self.fast_shoot = False
+        self.invulnerable = False
+        self.move_fast = False
+        self.invisibility = False
+        self.multi_shoot = False
+        self.power_shoot = False
+        self.weakening_shoot = False
         
     def draw_player(self, WIN):
-        center = self.rect.center
+        centro = self.rect.center
+        hulls1 = HULLS_1.get_rect(center = centro)
 
-        WIN.blit(HULLS_1, center)
+        #pygame.draw.rect(WIN,(0,0,0),self.rect, 1)
+        WIN.blit(HULLS_1, hulls1)
 
 
     def move(self,tiles):
@@ -178,6 +199,10 @@ class Player():
         self.movement = [0, 0]
         global HULLS_1, WEAPON_1
         keys_pressed = pygame.key.get_pressed()
+        self.use_item()
+        if self.move_fast:
+            self.VEL = 2.5
+
         if keys_pressed[pygame.K_a] and self.rect.x - self.VEL > 0 :  # LEFT
             self.movement[0] = -self.VEL
             HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE, (TANK_WIDTH, TANK_HEIGHT)), 90)
@@ -200,7 +225,7 @@ class Player():
         
         self.rect = self.move(tile_rects)
         self.shooting(tile_rects)
-        self.use_item()
+
 
     def cooldown(self):
         if self.cool_down_count >= 60:
@@ -208,49 +233,90 @@ class Player():
         elif self.cool_down_count > 0:
             self.cool_down_count += 1
     
+    def cooldown_item(self):
+        if self.cool_down_item >= 180:
+            self.cool_down_item = 0
+
+            #reset itens
+            self.extra_armor = False
+            self.fast_shoot = False
+            self.invulnerable = False
+            self.move_fast = False
+            self.invisibility = False
+            self.multi_shoot = False
+            self.power_shoot = False
+            self.weakening_shoot = False
+
+        elif self.cool_down_item > 0:
+            self.cool_down_item += 1
+
+
     def use_item(self):
+        self.cooldown_item()
+
         keys_pressed = pygame.key.get_pressed()
-        if keys_pressed[pygame.K_e]: #FIRE
+
+        if keys_pressed[pygame.K_e] and self.cool_down_count == 0: #FIRE
             pos = len(self.inventory) - 1
-            print(pos)
             if self.inventory:
                 print(self.inventory[pos].type)
                 if self.inventory[pos].type == 1: # Armadura extra
+                    self.extra_armor = True
                     self.inventory.remove(self.inventory[pos])
                     print("armor")
+
                 elif self.inventory[pos].type == 2: # Tiro rápido
-                    self.cool_down_count = 0
+                    self.fast_shoot = True
+                    print("fast_shoot")
                     self.inventory.remove(self.inventory[pos])
+
                 elif self.inventory[pos].type == 3: # Invulnerabilidade
+                    self.invulnerable = True
                     print("invu")
                     self.inventory.remove(self.inventory[pos])
+
                 elif self.inventory[pos].type == 4: # Movimento rápido
-                    self.VEL = 15
+                    self.move_fast = True
+                    print("move_fast")
                     self.inventory.remove(self.inventory[pos])
+
                 elif self.inventory[pos].type == 5: # Invisibilidade
+                    self.invisibility = True
                     print("invisivel")
                     self.inventory.remove(self.inventory[pos])
+
                 elif self.inventory[pos].type == 6: # Tiro múltiplo
+                    self.multi_shoot = True
                     print("multi shoot")
                     self.inventory.remove(self.inventory[pos])
+
                 elif self.inventory[pos].type == 7: # Tiro poderoso
+                    self.power_shoot = True
                     print("power shot")
                     self.inventory.remove(self.inventory[pos])
+
                 elif self.inventory[pos].type == 8: # Tiro enfraquecedor
+                    self.weakening_shoot = True
                     print("tiro enfrac")
                     self.inventory.remove(self.inventory[pos])
+
             else:
                 print("inventory empty")
 
     def shooting(self,tiles):
         self.cooldown()
         keys_pressed = pygame.key.get_pressed()
+        if self.multi_shoot:
+            num_bullet = 3
+        else :
+            num_bullet = 0
 
         if keys_pressed[pygame.K_SPACE] and self.cool_down_count == 0: #FIRE
             SHOT_SOUND.play()
-            bullet = Bullet(self.rect.x, self.rect.y,self.right,self.left)
-            self.bullets.append(bullet) 
-            self.cool_down_count = 1
+            for num in range(len(num_bullet)) :
+                bullet = Bullet(self.rect.x, self.rect.y,self.right,self.left,self.fast_shoot,self.power_shoot)
+                self.bullets.append(bullet) 
+                self.cool_down_count = 1
         for bullet in self.bullets:
             Bullet.update(bullet)
             if(bullet.colision(tiles)):
@@ -281,20 +347,6 @@ class POWERUP():
         self.color = (255, 0, 0)
 
     def draw_powerup(self, WIN):
-        pygame.draw.rect(WIN,(0,0,0),self.rect,1)
+        #pygame.draw.rect(WIN,(0,0,0),self.rect,1)
         WIN.blit(powerlist[self.type - 1], (self.x, self.y))
     
-
-    # def colision(self, tiles):
-    #     self.x += self.movement
-    #     hit_list = collision_test(self.rect, tiles)
-    #
-    #     for tile in hit_list:
-    #         if self.movement > 0:
-    #             self.rect.right = tile.left
-    #             return True
-    #         elif self.movement < 0:
-    #             self.rect.left = tile.right
-    #             return True
-    #         else:
-    #             return False
