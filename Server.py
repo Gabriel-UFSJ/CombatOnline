@@ -301,7 +301,7 @@ def threaded_client(CONNECTION,PLAYER):
 
 def main():
     global CURRENT_PLAYER
-    SERVER = "localhost"
+    SERVER = "172.18.1.7"
     PORT = 5555
 
     SERVER_SOCKET = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
