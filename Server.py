@@ -291,7 +291,7 @@ def threaded_client(CONNECTION,PLAYER):
             else:
                 REPLY = players
             CONNECTION.sendall(pickle.dumps(REPLY))
-            players = []
+            #players = []
         except:
             break
     print("Connection lost")

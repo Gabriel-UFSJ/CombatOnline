@@ -90,7 +90,7 @@ class Bullet(pygame.sprite.Sprite):
         #pygame.draw.rect(WIN,(0,0,0),self.rect, 1)
         
         if self.right == True:
-            WIN.blit(BULLET_RIGHT,(self.x - 40 ,self.y -45))
+           WIN.blit(BULLET_RIGHT,(self.x - 40 ,self.y -45))
         elif self.left == True:
             WIN.blit(BULLET_LEFT, (self.x - 40 ,self.y -45))
         elif self.up == True:
@@ -132,31 +132,34 @@ class Bullet(pygame.sprite.Sprite):
         
     def colision(self,tiles):
         self.x += self.movement[0]
+
         if not self.power_shoot: 
             hit_list = collision_test(self.rect,tiles)
+        if hit_list:
 
-        for tile in hit_list:
-            if self.movement[0] > 0:
-                self.rect.right = tile.left
-                return True
-            elif self.movement[0] < 0:
-                self.rect.left = tile.right
-                return True
+            for tile in hit_list:
+                if self.movement[0] > 0:
+                    self.rect.right = tile.left
+                    return True
+                elif self.movement[0] < 0:
+                    self.rect.left = tile.right
+                    return True
 
         self.y += self.movement[1]
-
+        
         if not self.power_shoot: 
             hit_list = collision_test(self.rect,tiles)
+        if hit_list:
 
-        for tile in hit_list:
-            if self.movement[1] > 0:
-                print("colide")
-                self.rect.bottom = tile.top
-                return True
-            elif self.movement[1] < 0:
-                print("colide")
-                self.rect.top = tile.bottom
-                return True
+            for tile in hit_list:
+                if self.movement[1] > 0:
+                    print("colide")
+                    self.rect.bottom = tile.top
+                    return True
+                elif self.movement[1] < 0:
+                    print("colide")
+                    self.rect.top = tile.bottom
+                    return True
         return False
 
         
@@ -205,7 +208,7 @@ class Player():
         centro = self.rect.center
         hulls1 = HULLS_1.get_rect(center = centro)
 
-        pygame.draw.rect(WIN,(0,0,0),self.rect, 1)
+        #pygame.draw.rect(WIN,(0,0,0),self.rect, 1)
         WIN.blit(HULLS_1, hulls1)
 
 
