@@ -65,9 +65,12 @@ def draw_window(WIN, DISPLAY, PLAYER1, PLAYER2, PLAYER3, PLAYER4):
 
     PLAYER1.draw_player(WIN)    #drawing player1
 
-    if not PLAYER2.invisibility: PLAYER2.draw_player(WIN)    #drawing player2
-    if not PLAYER3.invisibility: PLAYER3.draw_player(WIN)    #drawing player3
-    if not PLAYER4.invisibility: PLAYER4.draw_player(WIN)    #drawing player4
+    if not PLAYER2.invisibility and PLAYER2.health > 0: 
+        PLAYER2.draw_player(WIN)    #drawing player2
+    if not PLAYER3.invisibility and PLAYER3.health > 0: 
+        PLAYER3.draw_player(WIN)    #drawing player3
+    if not PLAYER4.invisibility and PLAYER4.health > 0: 
+        PLAYER4.draw_player(WIN)    #drawing player4
 
     PLAYER1_HEALTH = MYFONT.render(str(PLAYER1.health), 1, (0, 0, 0))
     PLAYER2_HEALTH = MYFONT.render(str(PLAYER2.health), 1, (0, 0, 0))
@@ -83,6 +86,15 @@ def draw_window(WIN, DISPLAY, PLAYER1, PLAYER2, PLAYER3, PLAYER4):
     #drawrect()
 
     pygame.display.update()
+
+def dead(WIN,PLAYER1):
+    if PLAYER1.DEAD == True:
+        while(1):
+            dead = "Dead"
+            WIN.blit(dead, (600, 350))
+            pygame.display.update()
+            pygame.time.delay(500)
+
 
 def start_round(WIN,PLAYER1,index):
     Start = ['3', '2', '1', 'READY    ']

@@ -58,6 +58,8 @@ def hit(PLAYER1, PLAYER2, PLAYER3, PLAYER4):
                 health[0] -= 1
                 PLAYER4.bullets.remove(bullet)
                 return True
+            else: PLAYER1.dead = True
+
             PLAYER1.extra_armor = False
         if PLAYER2.rect[0] < bullet.x < PLAYER2.rect[0] + PLAYER2.rect[2] and PLAYER2.rect[1] < bullet.y + 1 < PLAYER2.rect[1] + PLAYER2.rect[3]:
             if (PLAYER2.health > 0) and not(PLAYER2.extra_armor) and not(PLAYER2.invulnerable):
@@ -71,6 +73,7 @@ def hit(PLAYER1, PLAYER2, PLAYER3, PLAYER4):
                 health[1] -= 1
                 PLAYER4.bullets.remove(bullet)
                 return True
+            else: PLAYER2.dead = True
             PLAYER2.extra_armor = False
         if PLAYER3.rect[0] < bullet.x < PLAYER3.rect[0] + PLAYER3.rect[2] and PLAYER3.rect[1] < bullet.y + 1 < PLAYER3.rect[1] + PLAYER3.rect[3]:
             if (PLAYER3.health > 0) and not(PLAYER3.extra_armor) and not(PLAYER3.invulnerable):
@@ -84,6 +87,7 @@ def hit(PLAYER1, PLAYER2, PLAYER3, PLAYER4):
                 health[2] -= 1
                 PLAYER4.bullets.remove(bullet)
                 return True
+            else: PLAYER3.dead = True
             PLAYER3.extra_armor = False
 
     for bullet in PLAYER3.bullets:
@@ -99,6 +103,7 @@ def hit(PLAYER1, PLAYER2, PLAYER3, PLAYER4):
                 health[0] -= 1
                 PLAYER3.bullets.remove(bullet)
                 return True
+            else: PLAYER1.dead = True
             PLAYER1.extra_armor = False
         if PLAYER2.rect[0] < bullet.x < PLAYER2.rect[0] + PLAYER2.rect[2] and PLAYER2.rect[1] < bullet.y + 1 < PLAYER2.rect[1] + PLAYER2.rect[3]:
             if (PLAYER2.health > 0) and not(PLAYER2.extra_armor) and not(PLAYER2.invulnerable):
@@ -112,6 +117,7 @@ def hit(PLAYER1, PLAYER2, PLAYER3, PLAYER4):
                 health[1] -= 1
                 PLAYER3.bullets.remove(bullet)
                 return True
+            else: PLAYER2.dead = True
             PLAYER2.extra_armor = False
         if PLAYER4.rect[0] < bullet.x < PLAYER4.rect[0] + PLAYER4.rect[2] and PLAYER4.rect[1] < bullet.y + 1 < PLAYER4.rect[1] + PLAYER4.rect[3]:
             if (PLAYER4.health > 0) and not(PLAYER4.extra_armor) and not(PLAYER4.invulnerable):
@@ -125,6 +131,7 @@ def hit(PLAYER1, PLAYER2, PLAYER3, PLAYER4):
                 health[3] -= 1
                 PLAYER3.bullets.remove(bullet)
                 return True
+            else: PLAYER4.dead = True
             PLAYER4.extra_armor = False
 
     for bullet in PLAYER2.bullets:
@@ -140,6 +147,7 @@ def hit(PLAYER1, PLAYER2, PLAYER3, PLAYER4):
                 health[0] -= 1
                 PLAYER2.bullets.remove(bullet)
                 return True
+            else: PLAYER1.dead = True
         if PLAYER3.rect[0] < bullet.x < PLAYER3.rect[0] + PLAYER3.rect[2] and PLAYER3.rect[1] < bullet.y + 1 < PLAYER3.rect[1] + PLAYER3.rect[3]:
             if (PLAYER3.health > 0) and not(PLAYER3.extra_armor) and not(PLAYER3.invulnerable):
                 if PLAYER2.weakening_shoot:
@@ -152,6 +160,7 @@ def hit(PLAYER1, PLAYER2, PLAYER3, PLAYER4):
                 health[2] -= 1
                 PLAYER2.bullets.remove(bullet)
                 return True
+            else: PLAYER3.dead = True
             PLAYER2.extra_armor = False
         if PLAYER4.rect[0] < bullet.x < PLAYER4.rect[0] + PLAYER4.rect[2] and PLAYER4.rect[1] < bullet.y + 1 < PLAYER4.rect[1] + PLAYER4.rect[3]:
             if (PLAYER4.health > 0) and not(PLAYER4.extra_armor) and not(PLAYER4.invulnerable):
@@ -165,6 +174,7 @@ def hit(PLAYER1, PLAYER2, PLAYER3, PLAYER4):
                 health[3] -= 1
                 PLAYER2.bullets.remove(bullet)
                 return True
+            else: PLAYER4.dead = True
             PLAYER4.extra_armor = False
 
     for bullet in PLAYER1.bullets:
@@ -180,6 +190,7 @@ def hit(PLAYER1, PLAYER2, PLAYER3, PLAYER4):
                 health[1] -= 1 
                 PLAYER1.bullets.remove(bullet)
                 return True
+            else: PLAYER2.dead = True
             PLAYER2.extra_armor = False
         if PLAYER3.rect[0] < bullet.x < PLAYER3.rect[0] + PLAYER3.rect[2] and PLAYER3.rect[1] < bullet.y + 1 < PLAYER3.rect[1] + PLAYER3.rect[3]:
             if (PLAYER3.health > 0) and not(PLAYER3.extra_armor) and not(PLAYER3.invulnerable):
@@ -193,6 +204,7 @@ def hit(PLAYER1, PLAYER2, PLAYER3, PLAYER4):
                 health[2] -= 1
                 PLAYER1.bullets.remove(bullet)
                 return True
+            else: PLAYER3.dead = True
             PLAYER3.extra_armor = False
         if PLAYER4.rect[0] < bullet.x < PLAYER4.rect[0] + PLAYER4.rect[2] and PLAYER4.rect[1] < bullet.y + 1 < PLAYER4.rect[1] + PLAYER4.rect[3]:
             if (PLAYER4.health > 0) and not(PLAYER4.extra_armor) and not(PLAYER4.invulnerable):
@@ -206,6 +218,7 @@ def hit(PLAYER1, PLAYER2, PLAYER3, PLAYER4):
                 health[3] -= 1
                 PLAYER1.bullets.remove(bullet)
                 return True
+            else: PLAYER4.dead = True
             PLAYER4.extra_armor = False
     return False
 
@@ -278,6 +291,7 @@ def threaded_client(CONNECTION,PLAYER):
             else:
                 REPLY = players
             CONNECTION.sendall(pickle.dumps(REPLY))
+            players = []
         except:
             break
     print("Connection lost")
@@ -287,7 +301,7 @@ def threaded_client(CONNECTION,PLAYER):
 
 def main():
     global CURRENT_PLAYER
-    SERVER = "26.202.88.100"
+    SERVER = "localhost"
     PORT = 5555
 
     SERVER_SOCKET = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

@@ -181,6 +181,7 @@ class Player():
         #Health
         self.rect = pygame.Rect(X, Y, HULLS_1.get_width(), HULLS_1.get_height())
         self.health = health
+        self.dead = False
         #map
         self.map = map
         #server fill
@@ -204,8 +205,10 @@ class Player():
         centro = self.rect.center
         hulls1 = HULLS_1.get_rect(center = centro)
 
-        #pygame.draw.rect(WIN,(0,0,0),self.rect, 1)
+        pygame.draw.rect(WIN,(0,0,0),self.rect, 1)
         WIN.blit(HULLS_1, hulls1)
+
+
 
 
     def move(self,tiles):
