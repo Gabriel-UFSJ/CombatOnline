@@ -28,7 +28,9 @@ HULLS_2 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE,(TANK_WID
 
 ##effects##
 BULLET_IMAGE = pygame.image.load(os.path.join('Assets','PNG','Effects','Light_Shell.png'))
+BULLET_UP = pygame.transform.rotate(pygame.transform.scale(BULLET_IMAGE,(100,100)),0)
 BULLET_LEFT = pygame.transform.rotate(pygame.transform.scale(BULLET_IMAGE,(100,100)),90)
+BULLET_DOWN = pygame.transform.rotate(pygame.transform.scale(BULLET_IMAGE,(100,100)),180)
 BULLET_RIGHT  = pygame.transform.rotate(pygame.transform.scale(BULLET_IMAGE,(100,100)),270)
 ##effects##
 
@@ -68,14 +70,17 @@ def collision_test(rect, tiles):
 
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, pos_x, pos_y, look_right, look_left,fast_shoot,power_shoot):
+    def __init__(self, pos_x, pos_y, look_right, look_left,look_up, look_down,fast_shoot,power_shoot):
         self.x = pos_x + 20
         self.y = pos_y + 17
         self.right = look_right
         self.left = look_left
+        self.up = look_up
+        self.down = look_down
+
         self.fast_shoot = fast_shoot
         self.power_shoot = power_shoot
-
+        self.movement = [0,0]
 
         self.rect = pygame.Rect(self.x, self.y, 15, 10)
         self.color = (255,0,0)
@@ -88,37 +93,71 @@ class Bullet(pygame.sprite.Sprite):
             WIN.blit(BULLET_RIGHT,(self.x - 40 ,self.y -45))
         elif self.left == True:
             WIN.blit(BULLET_LEFT, (self.x - 40 ,self.y -45))
+        elif self.up == True:
+            WIN.blit(BULLET_UP, (self.x - 40 ,self.y -45))
+        elif self.down == True:
+            WIN.blit(BULLET_DOWN, (self.x - 40 ,self.y -45))
+
+
     
     def update(self): #update de position of the bullet
         if self.right == True:
             if self.fast_shoot:
-                self.movement = 10
+                self.movement[0] = 10
             else:
-                self.movement = 5
+                self.movement[0] = 5
+
         elif self.left == True:
             if self.fast_shoot:
-                self.movement = -10
+                self.movement[0] = -10
             else:
-                self.movement = -5
+                self.movement[0] = -5
+
+        elif self.down == True:
+            if self.fast_shoot:
+                self.movement[1] = 10
+            else:
+                self.movement[1] = 5
+
+        elif self.up == True:
+            if self.fast_shoot:
+                self.movement[1] = -10
+            else:
+                self.movement[1] = -5
+        
 
 
     def off_screen(self): #return True if the bullet is of the screen
         return not(self.x >= 0 and self.x <= WIDTH)
         
     def colision(self,tiles):
-        self.x += self.movement
+        self.x += self.movement[0]
         if not self.power_shoot: 
             hit_list = collision_test(self.rect,tiles)
 
         for tile in hit_list:
-            if self.movement > 0:
+            if self.movement[0] > 0:
                 self.rect.right = tile.left
                 return True
-            elif self.movement < 0:
+            elif self.movement[0] < 0:
                 self.rect.left = tile.right
                 return True
-            else:
-                return False
+
+        self.y += self.movement[1]
+
+        if not self.power_shoot: 
+            hit_list = collision_test(self.rect,tiles)
+
+        for tile in hit_list:
+            if self.movement[1] > 0:
+                print("colide")
+                self.rect.bottom = tile.top
+                return True
+            elif self.movement[1] < 0:
+                print("colide")
+                self.rect.top = tile.bottom
+                return True
+        return False
 
         
 
@@ -211,20 +250,40 @@ class Player():
             HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE, (TANK_WIDTH, TANK_HEIGHT)), 90)
             WEAPON_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_WEAPON,(WEAPON_WIDTH, WEAPON_HEIGHT)),90)
 
+            self.right = False
+            self.left = True
+            self.up = False
+            self.down = False
+
         if keys_pressed[pygame.K_d] and self.rect.x + self.VEL + 50 < WIDTH: # RIGHT
             self.movement[0] = self.VEL
             HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE, (TANK_WIDTH, TANK_HEIGHT)), 270)
             WEAPON_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_WEAPON,(WEAPON_WIDTH, WEAPON_HEIGHT)),270)
+
+            self.right = True
+            self.left = False
+            self.up = False
+            self.down = False
 
         if keys_pressed[pygame.K_w] and self.rect.y - self.VEL > 0  : # UP
             self.movement[1] = -self.VEL
             HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE, (TANK_WIDTH, TANK_HEIGHT)), 360)
             WEAPON_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_WEAPON,(WEAPON_WIDTH, WEAPON_HEIGHT)),360)
 
+            self.right = False
+            self.left = False
+            self.up = True
+            self.down = False
+
         if keys_pressed[pygame.K_s] and self.rect.y + self.VEL + 50 < HEIGHT : # DOWN
             self.movement[1] = self.VEL
             HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE, (TANK_WIDTH, TANK_HEIGHT)), 180)
             WEAPON_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_WEAPON,(WEAPON_WIDTH, WEAPON_HEIGHT)),180)
+
+            self.right = False
+            self.left = False
+            self.up = False
+            self.down = True
         
         self.rect = self.move(tile_rects)
         self.shooting(tile_rects)
@@ -319,13 +378,13 @@ class Player():
         
         if keys_pressed[pygame.K_SPACE] and self.cool_down_count == 0: #FIRE
             SHOT_SOUND.play()
-            bullet = Bullet(self.rect.x, self.rect.y,self.right,self.left,self.fast_shoot,self.power_shoot)
+            bullet = Bullet(self.rect.x, self.rect.y,self.right,self.left,self.up,self.down,self.fast_shoot,self.power_shoot)
             self.bullets.append(bullet) 
             self.cool_down_count = 1
             if self.multi_shoot:
-                bullet = Bullet(self.rect.x, self.rect.y,self.right,self.left,self.fast_shoot,self.power_shoot)
+                bullet = Bullet(self.rect.x, self.rect.y,self.right,self.left,self.up,self.down,self.fast_shoot,self.power_shoot)
                 self.bullets.append(bullet) 
-                bullet = Bullet(self.rect.x, self.rect.y,self.right,self.left,self.fast_shoot,self.power_shoot)
+                bullet = Bullet(self.rect.x, self.rect.y,self.right,self.left,self.up,self.down,self.fast_shoot,self.power_shoot)
                 self.bullets.append(bullet) 
                 self.cool_down_count = 1
                 
