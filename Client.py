@@ -62,12 +62,6 @@ def draw_window(WIN, DISPLAY, PLAYER1, PLAYER2, PLAYER3, PLAYER4):
 
     for powerup in PLAYER1.powers:
         powerup.draw_powerup(WIN)
-    for powerup in PLAYER2.powers:
-        powerup.draw_powerup(WIN)
-    for powerup in PLAYER3.powers:
-        powerup.draw_powerup(WIN)
-    for powerup in PLAYER4.powers:
-        powerup.draw_powerup(WIN)
 
     PLAYER1.draw_player(WIN)    #drawing player1
     PLAYER2.draw_player(WIN)    #drawing player2
@@ -170,31 +164,26 @@ def main():
     PLAYER1 = NETWORK.getServerPackage()    # get connection for player1
     ID = PLAYER1.ID
     print(ID)
+    print(PLAYER1)
     i = 0
     CLOCK = pygame.time.Clock()
 
     while RUN:
+        index = [0,1,2,3]
         CLOCK.tick(FPS)
 
-        PLAYER1 = NETWORK.send(PLAYER1)[ID]
+        players = NETWORK.send(PLAYER1)
+        
+        PLAYER1 = players[ID]
 
-        if ID == 0:
-            PLAYER2 = NETWORK.send(PLAYER1)[1]  # send to server player1 and receive player2
-            PLAYER3 = NETWORK.send(PLAYER1)[2]  # send to server player1 and receive player3
-            PLAYER4 = NETWORK.send(PLAYER1)[3]  # send to server player1 and receive player4
-        elif ID == 1:
-            PLAYER2 = NETWORK.send(PLAYER1)[0]  # send to server player1 and receive player2
-            PLAYER3 = NETWORK.send(PLAYER1)[2]  # send to server player1 and receive player3
-            PLAYER4 = NETWORK.send(PLAYER1)[3]  # send to server player1 and receive player4
-        elif ID == 2:
-            PLAYER2 = NETWORK.send(PLAYER1)[0]  # send to server player1 and receive player2
-            PLAYER3 = NETWORK.send(PLAYER1)[1]  # send to server player1 and receive player3
-            PLAYER4 = NETWORK.send(PLAYER1)[3]  # send to server player1 and receive player4
-        else:
-            PLAYER2 = NETWORK.send(PLAYER1)[0]  # send to server player1 and receive player2
-            PLAYER3 = NETWORK.send(PLAYER1)[1]  # send to server player1 and receive player3
-            PLAYER4 = NETWORK.send(PLAYER1)[2]  # send to server player1 and receive player4
-        #print(players)
+        index.remove(ID)
+
+        PLAYER2 = players[index[0]]  # send to server player1 and receive player2
+        PLAYER3 = players[index[1]]  # send to server player1 and receive player3
+        PLAYER4 = players[index[2]]  # send to server player1 and receive player4    
+
+        players = None 
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 RUN = False

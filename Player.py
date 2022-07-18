@@ -1,3 +1,4 @@
+from time import time
 import pygame
 import os
 from pygame import mixer
@@ -10,11 +11,18 @@ HIT_SOUND = mixer.Sound('Sounds/hit.wav')
 
 ##hulls##
 TANK_WIDTH, TANK_HEIGHT = 55,40
+WEAPON_WIDTH, WEAPON_HEIGHT = 30,50
 
 HULLS_1_IMAGE = pygame.image.load(os.path.join('Assets','PNG', 'Hulls_Color_A','teste_A.png'))
+HULLS_1_WEAPON = pygame.image.load(os.path.join('Assets','PNG', 'Weapon_Color_A','Gun_07.png'))
+
+WEAPON_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_WEAPON,(WEAPON_WIDTH, WEAPON_HEIGHT)),0)
 HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE,(TANK_WIDTH, TANK_HEIGHT)),0) # arrumar animações // hitbox
 
 HULLS_2_IMAGE = pygame.image.load(os.path.join('Assets','PNG', 'Hulls_Color_B','Hull_02.png'))
+HULLS_2_WEAPON = pygame.image.load(os.path.join('Assets','PNG', 'Weapon_Color_B','Gun_07.png'))
+
+WEAPON_2 = pygame.transform.rotate(pygame.transform.scale(HULLS_2_WEAPON,(WEAPON_WIDTH, WEAPON_HEIGHT)),0)
 HULLS_2 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE,(TANK_WIDTH, TANK_HEIGHT)),0) # arrumar animações // hitbox
 ##hulls##
 
@@ -44,6 +52,8 @@ POWERUP_5 = pygame.transform.rotate(pygame.transform.scale(POWERUP_5_IMAGE, (POW
 POWERUP_6 = pygame.transform.rotate(pygame.transform.scale(POWERUP_6_IMAGE, (POWERUP_SIZE, POWERUP_SIZE)), 0)
 POWERUP_7 = pygame.transform.rotate(pygame.transform.scale(POWERUP_7_IMAGE, (POWERUP_SIZE, POWERUP_SIZE)), 0)
 POWERUP_8 = pygame.transform.rotate(pygame.transform.scale(POWERUP_8_IMAGE, (POWERUP_SIZE, POWERUP_SIZE)), 0)
+
+powerlist = [POWERUP_1,POWERUP_2,POWERUP_3,POWERUP_4,POWERUP_5,POWERUP_6,POWERUP_7,POWERUP_8]
 ################
 
 WIDTH, HEIGHT = 1400, 920
@@ -73,9 +83,9 @@ class Bullet(pygame.sprite.Sprite):
         #pygame.draw.rect(WIN,(0,0,0),self.rect, 1)
         
         if self.right == True:
-            WIN.blit(BULLET_RIGHT,(self.x - 55,self.y - 45))
+            WIN.blit(BULLET_RIGHT,(self.x ,self.y - 20))
         elif self.left == True:
-            WIN.blit(BULLET_LEFT, (self.x - 55,self.y - 45))
+            WIN.blit(BULLET_LEFT, (self.x ,self.y - 20))
     
     def update(self): #update de position of the bullet
         if self.right == True:
@@ -133,12 +143,10 @@ class Player():
         self.inventory = []
         
     def draw_player(self, WIN):
-        #pygame.draw.rect(WIN,(0,0,0),self.rect,1)
+        center = self.rect.center
 
-        if self.right == True:
-            WIN.blit(HULLS_1, (self.rect.x, self.rect.y))
-        else:
-            WIN.blit(HULLS_2, (self.rect.x, self.rect.y))
+        WIN.blit(HULLS_1, center)
+
 
     def move(self,tiles):
         collision_types = {'top': False, 'bottom': False, 'right': False, 'left': False}
@@ -168,29 +176,71 @@ class Player():
 
     def keys(self,tile_rects):
         self.movement = [0, 0]
-        global HULLS_1
+        global HULLS_1, WEAPON_1
         keys_pressed = pygame.key.get_pressed()
         if keys_pressed[pygame.K_a] and self.rect.x - self.VEL > 0 :  # LEFT
             self.movement[0] = -self.VEL
             HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE, (TANK_WIDTH, TANK_HEIGHT)), 90)
+            WEAPON_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_WEAPON,(WEAPON_WIDTH, WEAPON_HEIGHT)),90)
+
         if keys_pressed[pygame.K_d] and self.rect.x + self.VEL + 50 < WIDTH: # RIGHT
             self.movement[0] = self.VEL
             HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE, (TANK_WIDTH, TANK_HEIGHT)), 270)
+            WEAPON_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_WEAPON,(WEAPON_WIDTH, WEAPON_HEIGHT)),270)
+
         if keys_pressed[pygame.K_w] and self.rect.y - self.VEL > 0  : # UP
             self.movement[1] = -self.VEL
             HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE, (TANK_WIDTH, TANK_HEIGHT)), 360)
+            WEAPON_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_WEAPON,(WEAPON_WIDTH, WEAPON_HEIGHT)),360)
+
         if keys_pressed[pygame.K_s] and self.rect.y + self.VEL + 50 < HEIGHT : # DOWN
             self.movement[1] = self.VEL
             HULLS_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_IMAGE, (TANK_WIDTH, TANK_HEIGHT)), 180)
+            WEAPON_1 = pygame.transform.rotate(pygame.transform.scale(HULLS_1_WEAPON,(WEAPON_WIDTH, WEAPON_HEIGHT)),180)
         
         self.rect = self.move(tile_rects)
         self.shooting(tile_rects)
+        self.use_item()
 
     def cooldown(self):
         if self.cool_down_count >= 60:
             self.cool_down_count = 0
         elif self.cool_down_count > 0:
             self.cool_down_count += 1
+    
+    def use_item(self):
+        keys_pressed = pygame.key.get_pressed()
+        if keys_pressed[pygame.K_e]: #FIRE
+            pos = len(self.inventory) - 1
+            print(pos)
+            if self.inventory:
+                print(self.inventory[pos].type)
+                if self.inventory[pos].type == 1: # Armadura extra
+                    self.inventory.remove(self.inventory[pos])
+                    print("armor")
+                elif self.inventory[pos].type == 2: # Tiro rápido
+                    self.cool_down_count = 0
+                    self.inventory.remove(self.inventory[pos])
+                elif self.inventory[pos].type == 3: # Invulnerabilidade
+                    print("invu")
+                    self.inventory.remove(self.inventory[pos])
+                elif self.inventory[pos].type == 4: # Movimento rápido
+                    self.VEL = 15
+                    self.inventory.remove(self.inventory[pos])
+                elif self.inventory[pos].type == 5: # Invisibilidade
+                    print("invisivel")
+                    self.inventory.remove(self.inventory[pos])
+                elif self.inventory[pos].type == 6: # Tiro múltiplo
+                    print("multi shoot")
+                    self.inventory.remove(self.inventory[pos])
+                elif self.inventory[pos].type == 7: # Tiro poderoso
+                    print("power shot")
+                    self.inventory.remove(self.inventory[pos])
+                elif self.inventory[pos].type == 8: # Tiro enfraquecedor
+                    print("tiro enfrac")
+                    self.inventory.remove(self.inventory[pos])
+            else:
+                print("inventory empty")
 
     def shooting(self,tiles):
         self.cooldown()
@@ -221,7 +271,7 @@ class Player():
                 self.powers.append(power)
 
 
-class POWERUP(pygame.sprite.Sprite):
+class POWERUP():
     def __init__(self, pos_x, pos_y,power_type):
         global POWERUP_SIZE
         self.x = pos_x
@@ -232,7 +282,7 @@ class POWERUP(pygame.sprite.Sprite):
 
     def draw_powerup(self, WIN):
         pygame.draw.rect(WIN,(0,0,0),self.rect,1)
-        WIN.blit(POWERUP_1, (self.x, self.y))
+        WIN.blit(powerlist[self.type - 1], (self.x, self.y))
     
 
     # def colision(self, tiles):
